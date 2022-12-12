@@ -16,20 +16,25 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	sum := 0
 	for scanner.Scan() {
-		line := scanner.Text()
-		bag1 := line[0 : len(line)/2]
-		bag2 := line[len(line)/2:]
+		bag1 := scanner.Text()
+		scanner.Scan()
+		bag2 := scanner.Text()
+		scanner.Scan()
+		bag3 := scanner.Text()
 
 	out:
-		for i := 0; i < len(bag1); i++ {
-			for j := 0; j < len(bag2); j++ {
-				if bag1[i] == bag2[j] {
-					if bag1[i] < 97 {
-						sum += (int(bag1[i]) - 38)
-					} else {
-						sum += (int(bag1[i]) - 96)
+		for x := 0; x < len(bag1); x++ {
+			for y := 0; y < len(bag2); y++ {
+				for z := 0; z < len(bag3); z++ {
+					if bag1[x] == bag2[y] && bag1[x] == bag3[z] {
+						if bag1[x] < 97 {
+							sum += (int(bag1[x]) - 38)
+						} else {
+							sum += (int(bag1[x]) - 96)
+						}
+
+						break out
 					}
-					break out
 				}
 			}
 		}
