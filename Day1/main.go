@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -33,12 +34,10 @@ func main() {
 		}
 	}
 
-	highestCalories := 0
-	for _, v := range sum {
-		highestCalories = max(highestCalories, v)
-	}
+	sort.Ints(sum)
+	sumLength := len(sum)
 
-	fmt.Printf("%v", highestCalories)
+	fmt.Printf("%v", sum[sumLength-1]+sum[sumLength-2]+sum[sumLength-3])
 }
 
 func max(x int, y int) int {
