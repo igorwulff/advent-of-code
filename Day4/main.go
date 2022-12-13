@@ -22,10 +22,14 @@ func main() {
 		result1 := StringArrayToInt(strings.Split(result[0], "-"))
 		result2 := StringArrayToInt(strings.Split(result[1], "-"))
 
-		if result1[0] <= result2[0] && result1[1] >= result2[1] {
-			sum += 1
-		} else if result2[0] <= result1[0] && result2[1] >= result1[1] {
-			sum += 1
+	out:
+		for i := result1[0]; i <= result1[1]; i++ {
+			for j := result2[0]; j <= result2[1]; j++ {
+				if i == j {
+					sum += 1
+					break out
+				}
+			}
 		}
 	}
 
