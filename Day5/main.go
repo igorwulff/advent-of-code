@@ -9,16 +9,16 @@ import (
 )
 
 func main() {
-	stackList := make([]Stack, 9)
-	stackList[0] = append(stackList[0], "D", "T", "R", "B", "J", "L", "W", "G")
-	stackList[1] = append(stackList[1], "S", "W", "C")
-	stackList[2] = append(stackList[2], "R", "Z", "T", "M")
-	stackList[3] = append(stackList[3], "D", "T", "C", "H", "S", "P", "V")
-	stackList[4] = append(stackList[4], "G", "P", "T", "L", "D", "Z")
-	stackList[5] = append(stackList[5], "F", "B", "R", "Z", "J", "Q", "C", "D")
-	stackList[6] = append(stackList[6], "S", "B", "D", "J", "M", "F", "T", "R")
-	stackList[7] = append(stackList[7], "L", "H", "R", "B", "T", "V", "M")
-	stackList[8] = append(stackList[8], "Q", "P", "D", "S", "V")
+	stack := make([]Stack, 9)
+	stack[0] = append(stack[0], "D", "T", "R", "B", "J", "L", "W", "G")
+	stack[1] = append(stack[1], "S", "W", "C")
+	stack[2] = append(stack[2], "R", "Z", "T", "M")
+	stack[3] = append(stack[3], "D", "T", "C", "H", "S", "P", "V")
+	stack[4] = append(stack[4], "G", "P", "T", "L", "D", "Z")
+	stack[5] = append(stack[5], "F", "B", "R", "Z", "J", "Q", "C", "D")
+	stack[6] = append(stack[6], "S", "B", "D", "J", "M", "F", "T", "R")
+	stack[7] = append(stack[7], "L", "H", "R", "B", "T", "V", "M")
+	stack[8] = append(stack[8], "Q", "P", "D", "S", "V")
 
 	file, err := os.Open("input.txt")
 	if err != nil {
@@ -34,31 +34,34 @@ func main() {
 			panic(err)
 		}
 
-		indexFrom, err := strconv.Atoi(line[3])
+		from, err := strconv.Atoi(line[3])
 		if err != nil {
 			panic(err)
 		}
-		indexFrom -= 1
+		from -= 1
 
-		indexTo, err := strconv.Atoi(line[5])
+		to, err := strconv.Atoi(line[5])
 		if err != nil {
 			panic(err)
 		}
-		indexTo -= 1
+		to -= 1
 
-		for i := 0; i < count; i++ {
-			stackItem := stackList[indexFrom].Pop()
-			stackList[indexTo].Push(stackItem)
-		}
+		mover := make(Stack, count)
+		copy(mover, stack[from][len(stack[from])-count:])
+		stack[from] = stack[from][:len(stack[from])-count]
+		stack[to] = append(stack[to], mover...)
 	}
 
-	for _, letter := range stackList {
-		fmt.Print(letter.Pop())
-		//fmt.Printf("%s", letter.Pop())
+	for _, letter := range stack {
+		fmt.Print(letter[len(letter)-1])
 	}
 }
 
 type Stack []string
+
+func (s *Stack) IsNotEmpty() bool {
+	return len(*s) != 0
+}
 
 // IsEmpty: check if stack is empty
 func (s *Stack) IsEmpty() bool {
@@ -78,6 +81,16 @@ func (s *Stack) Pop() string {
 		index := len(*s) - 1   // Get the index of the top most element.
 		element := (*s)[index] // Index into the slice and obtain the element.
 		*s = (*s)[:index]      // Remove it from the stack by slicing it off.
+		return element
+	}
+}
+
+func (s *Stack) Unshift() string {
+	if s.IsEmpty() {
+		return ""
+	} else {
+		element := (*s)[0] // The first element is the one to be dequeued.
+		*s = (*s)[1:]      // Slice off the element once it is dequeued.
 		return element
 	}
 }
