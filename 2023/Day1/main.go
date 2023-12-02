@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -15,11 +17,9 @@ func main() {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "" {
+		line := strings.Split(scanner.Text(), " : ")
 
-		} else {
+		fmt.Sprintln(line)
 
-		}
 	}
 }
