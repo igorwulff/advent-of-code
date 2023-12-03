@@ -12,15 +12,19 @@ type Cell struct {
 	value string
 }
 
+// 65684750
+// NOT CORRECT: 65299218
+// 68864416
+// 74528807
 func main() {
-	lines, _ := readLines("input.txt")
+	lines, _ := readLines("sample.txt")
 
 	prevLine := ""
 	curLine := lines[0]
 	nextLine := lines[1]
 
-	value := ""
 	sum := 0
+
 	for row, line := range lines {
 		if row > 0 {
 			prevLine = curLine
@@ -32,14 +36,15 @@ func main() {
 			nextLine = ""
 		}
 
+		if nextLine == "" {
+
+		}
+
 		for index, letter := range line {
-			if unicode.IsDigit(letter) {
-				value += string(letter)
-			}
+			if string(letter) == "*" {
+				list := make([]string, 0, 5)
 
-			if (!unicode.IsDigit(letter) && value != "") || len(curLine)-1 == index {
-
-				start := index - len(value) - 1
+				start := index - 1
 				end := index + 1
 
 				if len(curLine) < end {
@@ -51,52 +56,112 @@ func main() {
 				}
 
 				if prevLine != "" {
-					for _, sign := range prevLine[start:end] {
-						if string(sign) != "." && !unicode.IsDigit(sign) {
-							digit, _ := strconv.Atoi(value)
-							sum += digit
-							fmt.Println("========================")
-							fmt.Println(value)
-							fmt.Println(string(sign))
-							fmt.Println("========================")
-							value = ""
-							continue
+					value := ""
+					for key, sign := range prevLine[start:] {
+						if unicode.IsDigit(sign) {
+							if value == "" && key == 0 {
+								lookup := start - 1
+								for lookup >= 0 {
+									_, error := strconv.Atoi(string(prevLine[lookup]))
+									if error == nil {
+										value = string(prevLine[lookup]) + value
+										lookup--
+									} else {
+										break
+									}
+								}
+							}
 
+							value += string(sign)
+							if start+key+1 == len(prevLine) {
+								list = append(list, value)
+							}
+						} else if value != "" {
+							list = append(list, value)
+							value = ""
+							if string(sign) != "*" && key > 1 {
+								break
+							}
+						} else if value == "" && key > 1 {
+							break
 						}
 					}
 				}
 
-				for _, sign := range curLine[start:end] {
-					if string(sign) != "." && !unicode.IsDigit(sign) {
-						digit, _ := strconv.Atoi(value)
-						sum += digit
-						fmt.Println("========================")
-						fmt.Println(value)
-						fmt.Println(string(sign))
-						fmt.Println("========================")
-						value = ""
-						continue
+				value := ""
+				for key, sign := range curLine[start:] {
+					if unicode.IsDigit(sign) {
+						if value == "" && key == 0 {
+							lookup := start - 1
+							for lookup >= 0 {
+								_, error := strconv.Atoi(string(curLine[lookup]))
+								if error == nil {
+									value = string(curLine[lookup]) + value
+									lookup--
+								} else {
+									break
+								}
+							}
+						}
 
+						value += string(sign)
+						if start+key+1 == len(curLine) {
+							list = append(list, value)
+						}
+					} else if value != "" {
+						list = append(list, value)
+						value = ""
+						if string(sign) != "*" && key > 1 {
+							break
+						}
+					} else if value == "" && key > 1 {
+						break
 					}
 				}
 
 				if nextLine != "" {
-					for _, sign := range nextLine[start:end] {
-						if string(sign) != "." && !unicode.IsDigit(sign) {
-							digit, _ := strconv.Atoi(value)
-							sum += digit
-							fmt.Println("========================")
-							fmt.Println(value)
-							fmt.Println(string(sign))
-							fmt.Println("========================")
-							value = ""
-							continue
+					value := ""
+					for key, sign := range nextLine[start:] {
+						if unicode.IsDigit(sign) {
+							if value == "" && key == 0 {
+								lookup := start - 1
+								for lookup >= 0 {
+									_, error := strconv.Atoi(string(nextLine[lookup]))
+									if error == nil {
+										value = string(nextLine[lookup]) + value
+										lookup--
+									} else {
+										break
+									}
+								}
+							}
 
+							value += string(sign)
+							if start+key+1 == len(curLine) {
+								list = append(list, value)
+							}
+						} else if value != "" {
+							list = append(list, value)
+							value = ""
+							if string(sign) != "*" && key > 1 {
+								break
+							}
+						} else if value == "" && key > 1 {
+							break
 						}
 					}
 				}
 
-				value = ""
+				if len(list) == 2 {
+					left, _ := strconv.Atoi(list[0])
+					right, _ := strconv.Atoi(list[1])
+					//extra, _ := strconv.Atoi(list[2])
+					fmt.Println(left)
+					fmt.Println(right)
+					//fmt.Println(extra)
+					//fmt.Println("#######")
+					sum += (left * right)
+				}
 			}
 		}
 	}
