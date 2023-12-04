@@ -13,10 +13,29 @@ func main() {
 		panic(err)
 	}
 	defer file.Close()
-	fmt.Println("sdf")
+
+	count := 0
 	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		count++
+	}
+
+	cards := make([]int, count)
+	for k, _ := range cards {
+		cards[k] = 1
+	}
+	//copies := make([]int, count)
 
 	sum := 0
+	card := 1
+
+	file, err = os.Open("../input.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	scanner = bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := strings.Split(scanner.Text(), ":")
 		line = strings.Split(line[1], "|")
@@ -24,25 +43,30 @@ func main() {
 		winners := strings.Split(line[0], " ")
 		losers := strings.Split(line[1], " ")
 
-		count := 0
+		matches := 0
+		// 0 1 2 3 4...
 		for _, v1 := range winners {
 			if v1 != "" {
 				for _, v2 := range losers {
 					if v2 != "" {
 						if v1 == v2 {
-							if count == 0 {
-								count = 1
-							} else {
-								count *= 2
-							}
+							matches++
 						}
 					}
 				}
 			}
 		}
 
-		sum += count
+		fmt.Println(matches) // 0 1 2 3
+		multiplier := cards[card-1]
+		for i := card; i < matches+card && i < count; i++ {
+			cards[i] += multiplier
+		}
+		card++
+	}
 
+	for _, v := range cards {
+		sum += v
 	}
 
 	fmt.Println("The answer is: `" + fmt.Sprint(sum) + "`")
