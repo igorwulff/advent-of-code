@@ -24,7 +24,6 @@ func main() {
 	for k, _ := range cards {
 		cards[k] = 1
 	}
-	//copies := make([]int, count)
 
 	sum := 0
 	card := 1
@@ -44,7 +43,6 @@ func main() {
 		losers := strings.Split(line[1], " ")
 
 		matches := 0
-		// 0 1 2 3 4...
 		for _, v1 := range winners {
 			if v1 != "" {
 				for _, v2 := range losers {
@@ -57,7 +55,6 @@ func main() {
 			}
 		}
 
-		fmt.Println(matches) // 0 1 2 3
 		multiplier := cards[card-1]
 		for i := card; i < matches+card && i < count; i++ {
 			cards[i] += multiplier
