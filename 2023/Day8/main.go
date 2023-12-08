@@ -27,7 +27,7 @@ func main() {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	r, _ := regexp.Compile("([A-Z]+)")
+	r, _ := regexp.Compile("([1-9A-Z]+)")
 	nodes := make(map[string]*node)
 	scanner.Scan()
 	coord := scanner.Text()
@@ -44,27 +44,47 @@ func main() {
 		nodeI.right = nodes[nodeI.rightValue]
 	}
 
-	curNode := nodes["AAA"]
+	startNodes := make([]*node, 0)
+	for key, node := range nodes {
+		if string(key[2]) != "A" {
+			continue
+		}
+		startNodes = append(startNodes, node)
+	}
+
 	steps := 0
+out:
 	for {
 		for _, direction := range coord {
 			steps++
-			if string(direction) == "L" {
-				curNode = curNode.left
-			} else {
-				curNode = curNode.right
+			newNodes := make([]*node, 0)
+			for _, node := range startNodes {
+				if string(direction) == "L" {
+					newNodes = append(newNodes, node.left)
+				} else {
+					newNodes = append(newNodes, node.right)
+				}
+			}
+			startNodes = newNodes
+
+			matches := 0
+
+			//fmt.Printf("Run %d", steps)
+			for _, node := range startNodes {
+				if string(node.value[2]) == "Z" {
+					matches++
+				}
 			}
 
-			if string(direction) == "ZZZ" {
-				break
+			if matches == len(startNodes) {
+				break out
 			}
-		}
-		if curNode.value == "ZZZ" {
-			break
 		}
 	}
 
 	elapsed := time.Since(start)
 	log.Printf("Execution time: %s", elapsed)
 	fmt.Printf("Steps needed: %d", steps)
+
+	/// 21883 to low answer.
 }
