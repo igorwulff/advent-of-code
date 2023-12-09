@@ -53,10 +53,10 @@ func main() {
 	}
 
 	steps := 0
-	coordLength := len(coord);
+	coordLength := len(coord)
 out:
 	for {
-		for i:=0; i<coordLength; i++ {
+		for i := 0; i < coordLength; i++ {
 			steps++
 			if coord[i] == 76 { // L
 				startNodes[0] = startNodes[0].left
@@ -74,14 +74,11 @@ out:
 				startNodes[5] = startNodes[5].right
 			}
 
-			if (startNodes[0].value[2] == 90 && startNodes[1].value[2] == 90 && startNodes[2].value[2] == 90 && startNodes[3].value[2] == 90 && startNodes[4].value[2] == 90 && startNodes[5].value[2] == 90) {
+			if startNodes[0].value[2] == 90 && startNodes[1].value[2] == 90 && startNodes[2].value[2] == 90 && startNodes[3].value[2] == 90 && startNodes[4].value[2] == 90 && startNodes[5].value[2] == 90 {
 				break out
 			}
 		}
-
-		fmt.Println(steps);
 	}
-
 
 	log.Printf("Execution time: %s", time.Since(start))
 	fmt.Printf("Steps needed: %d", steps)
