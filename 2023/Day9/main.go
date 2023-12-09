@@ -53,7 +53,7 @@ func history(data []int) int {
 	diff := make([]int, len(data)-1)
 
 	for i := 0; i < len(data)-1; i++ {
-		diff[i] = calcDiff(data[i], data[i+1])
+		diff[i] = data[i] - data[i+1]
 	}
 
 	if len(diff) > 1 {
