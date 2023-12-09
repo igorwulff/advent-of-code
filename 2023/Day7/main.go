@@ -16,7 +16,7 @@ var strength = map[string]int{"A": 14, "K": 13, "Q": 12, "J": 11, "T": 10, "9": 
 func main() {
 	start := time.Now()
 
-	file, err := os.Open("./sample.txt")
+	file, err := os.Open("./input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -25,65 +25,120 @@ func main() {
 	scanner := bufio.NewScanner(file)
 
 	sum := 0
-	sets := make(map[string]int)   // "32T3K" => 765
-	values := make(map[string]int) // "32T3K" => 765
+	hands := make(map[string]int) // "32T3K" => 765
 	for scanner.Scan() {
 		data := strings.Split(scanner.Text(), " ")
 		value, _ := strconv.Atoi(data[1])
-		sets[data[0]] = value
-		values[data[0]] = 0
+
+		i := data[0]
+		hands[i] = value
 	}
 
-	keys := make([]string, 0, len(sets))
-	for v2 := range sets {
-		keys = append(keys, v2)
+	ranking := make([]string, 0, len(hands))
+	for hand := range hands {
+		ranking = append(ranking, hand)
 	}
-	fmt.Println(keys)
-	sort.SliceStable(keys, func(i int, j int) bool {
-		sortl, valuesl := sortHand(keys[i], keys, sets)
-		sortr, valuesr := sortHand(keys[j], keys, sets)
 
-		fmt.Println("CHECK:")
-		fmt.Println(sortl)
-		fmt.Println(valuesl)
-		fmt.Println(sortr)
-		fmt.Println(valuesr)
+	sort.SliceStable(ranking, func(i int, j int) bool {
+		left := make(map[rune]int)
+		sortedLeft := sortHand(ranking[i])
+		for _, v := range sortedLeft {
+			left[v]++
+		}
 
-		for _, i := range sortl {
-			for _, j := range sortr {
-				fmt.Println(valuesl[i])
-				fmt.Println(valuesr[j])
+		right := make(map[rune]int)
+		sortedRight := sortHand(ranking[j])
+		for _, v := range sortedRight {
+			right[v]++
+		}
 
+		valueLeft := handValue(left)
+		valueRight := handValue(right)
+
+		if valueLeft == valueRight {
+			for k := 0; k < 5; k++ {
+				if strength[string(ranking[i][k])] == strength[string(ranking[j][k])] {
+					continue
+				}
+
+				return strength[string(ranking[i][k])] < strength[string(ranking[j][k])]
 			}
 		}
-		return true
+		return valueLeft < valueRight
 	})
 
-	fmt.Println("By name:", keys)
+	for i, v := range ranking {
+		fmt.Print(i)
+		fmt.Print(":" + v + ":")
+		fmt.Print(hands[v])
+		fmt.Println()
+		sum += hands[v] * (i + 1)
+	}
+
 	fmt.Println("The answer is: `" + fmt.Sprint(sum) + "`")
 
 	elapsed := time.Since(start)
 	log.Printf("Execution time: %s", elapsed)
 }
 
-func sortHand(hand string, keys []string, sets map[string]int) ([]string, map[string]int) {
-	matches := make(map[string]int)
+func handValue(hand map[rune]int) int {
+	value := 0 //XX.XX.XX.XX.XX.XX.XX
 	for _, v := range hand {
-		matches[string(v)]++
+		// Five of a kind.
+		if v == 5 {
+			value = 7
+		}
+
+		// Four of a kind.
+		if v == 4 {
+			value = 6
+			continue
+		}
+
+		// Three of a kind
+		if v == 3 {
+			if value == 2 {
+				value = 5
+			} else {
+				value = 4
+			}
+		}
+
+		if v == 2 {
+			if value == 4 { // if value is already three of a kind then:
+				value = 5 // Full house... = 5
+			} else if value == 2 { //if value is already a pair.
+				value = 3 // 2 pairs... = 3
+				continue
+			} else {
+				value = 2
+			}
+		}
+	}
+
+	return value
+}
+
+// Sort a hand by value.
+func sortHand(hand string) string {
+	matches := make(map[string]int)
+	for _, card := range hand {
+		matches[string(card)]++
 	}
 
 	// Sort map by value.
 	cards := make([]string, 0, len(matches))
-	for v := range matches {
-		cards = append(cards, v)
+	for card := range matches {
+		cards = append(cards, card)
 	}
 
-	sort.SliceStable(keys, func(i int, j int) bool {
-		if matches[keys[i]] == matches[keys[j]] {
-			return strength[keys[i]] < strength[keys[j]]
+	chars := []rune(hand)
+	sort.SliceStable(chars, func(i, j int) bool {
+		if matches[string(chars[i])] == matches[string(chars[j])] {
+			return strength[string(chars[i])] > strength[string(chars[j])]
 		}
-		return matches[keys[i]] < matches[keys[j]]
+		return matches[string(chars[i])] > matches[string(chars[j])]
 	})
 
-	return cards, matches
+	return string(chars)
 }
