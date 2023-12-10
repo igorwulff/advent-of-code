@@ -26,7 +26,7 @@ var grid []node
 func main() {
 	start := time.Now()
 
-	file, err := os.Open("./sample.txt")
+	file, err := os.Open("./input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -57,15 +57,20 @@ func main() {
 		steps := 0
 		for {
 			next, err = findNextPosition(next)
-			if err != nil || string(next.value) == "S" {
+			if err != nil {
+				steps = 0
+				break
+			} else if string(next.value) == "S" {
 				break
 			} else {
 				steps++
 			}
 		}
+
 		if string(next.value) == "S" && steps > longest {
 			longest = steps
 		}
+
 	}
 
 	fmt.Println((longest / 2) + 1)
@@ -74,7 +79,7 @@ func main() {
 }
 
 func getPos(x, y int) (*node, error) {
-	if x < 0 || x > width || y < 0 || y > height {
+	if x < 0 || x >= width || y < 0 || y >= height {
 		return nil, errors.New("Invalid position")
 	}
 	return &(grid[(y*width)+x]), nil
@@ -107,11 +112,18 @@ func findNextPosition(cur node) (node, error) {
 
 	if cur.value == "|" {
 		if cur.x == cur.prev.x { // Same horizontal axis.
-			nextY := cur.y + 1
-			if cur.y < cur.prev.y {
-				nextY = cur.y - 1
+			if cur.y < cur.prev.y { // Go from Bottom to Top: | 7 F
+				nextNode, _ = getPos(cur.x, cur.y-1) // 0+(0-1) = -1*-1
+				if nextNode.value != "|" && nextNode.value != "7" && nextNode.value != "F" && nextNode.value != "S" {
+					//return cur, errors.New("No position found")
+				}
+			} else { // | L J
+				nextNode, _ = getPos(cur.x, cur.y+1) // 0+(0-1) = -1*-1
+				if nextNode.value != "|" && nextNode.value != "L" && nextNode.value != "J" && nextNode.value != "S" {
+					//return cur, errors.New("No position found")
+				}
 			}
-			nextNode, _ = getPos(cur.x, nextY) // 0+(0-1) = -1*-1
+
 		}
 	} else if cur.value == "-" {
 		if cur.y == cur.prev.y { // Same vertical axis.
@@ -137,7 +149,7 @@ func findNextPosition(cur node) (node, error) {
 		if cur.prev.x < cur.x { // if pipe came from the west.
 			nextNode, _ = getPos(cur.x, cur.y+1)
 		} else { // if pipe came from the south.
-			nextNode, _ = getPos(cur.x+1, cur.y)
+			nextNode, _ = getPos(cur.x-1, cur.y)
 		}
 	} else if cur.value == "F" {
 		if cur.prev.y > cur.y { // if pipe came from the north.
