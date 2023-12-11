@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"slices"
 	"time"
 )
 
 type node struct {
-	value string
-	x     int
-	y     int
+	value  string
+	x      int
+	y      int
+	weight int
 }
 
 var width = 0
@@ -34,7 +34,7 @@ func main() {
 	height = 0
 	for scanner.Scan() {
 		for x, row := range scanner.Text() {
-			node := node{value: string(row), x: x, y: height}
+			node := node{value: string(row), x: x, y: height, weight: 1}
 			grid = append(grid, node)
 		}
 		if width == 0 {
@@ -67,8 +67,13 @@ func getPos(x, y int) (*node, error) {
 
 func findClosestNeighbour(star *node, stars []*node, skipStars []*node) int {
 	closest := 0
+	//stepX := star.y
+	//stepY := star.x
+
 	for _, cell := range stars {
 		skip := false
+
+		// Skip pairs that have already been done.
 		for _, skipStar := range skipStars {
 			if skipStar == cell {
 				skip = true
@@ -89,7 +94,29 @@ func findClosestNeighbour(star *node, stars []*node, skipStars []*node) int {
 			disY *= -1
 		}
 
-		closest += disX + disY
+		x := star.x
+		y := star.y
+		for x != cell.x {
+			if x < cell.x {
+				x++
+			} else {
+				x--
+			}
+
+			node, _ := getPos(x, y)
+			closest += node.weight
+		}
+
+		for y != cell.y {
+			if y < cell.y {
+				y++
+			} else {
+				y--
+			}
+
+			node, _ := getPos(x, y)
+			closest += node.weight
+		}
 	}
 
 	return closest
@@ -134,10 +161,12 @@ func expand() {
 	inc := 1
 	for _, x := range empty {
 		for y := 0; y < height; y++ {
-			grid = slices.Insert(grid, (y*width)+x+inc, node{value: ".", x: x, y: y})
 			if y == 1 {
-				width++
+				//width++
 			}
+			node, _ := getPos(x, y)
+			node.weight = 1000000
+			//grid = slices.Insert(grid, (y*width)+x+inc, node{value: "@", x: x, y: y, weight: 10})
 		}
 		inc++
 	}
@@ -155,9 +184,11 @@ func expand() {
 
 		if isEmpty {
 			for x := 0; x < width; x++ {
-				grid = slices.Insert(grid, (y*width)+x, node{value: ".", x: x, y: y})
+				node, _ := getPos(x, y)
+				node.weight = 1000000
+				//grid = slices.Insert(grid, (y*width)+x, node{value: "@", x: x, y: y, weight: 10})
 			}
-			height++
+			//height++
 			y++
 		}
 	}
@@ -178,3 +209,5 @@ func Draw() {
 	}
 	fmt.Println("--------------------------")
 }
+
+//Answer it to low: 82000210
