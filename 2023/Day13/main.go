@@ -62,8 +62,7 @@ func main() {
 	sum := 0
 	for _, grid := range grids {
 		findReflection(grid)
-
-		if grid.isVertical {
+		if !grid.isVertical {
 			sum += grid.reflectionLine
 		} else {
 			sum += grid.reflectionLine * 100
@@ -71,7 +70,6 @@ func main() {
 	}
 
 	fmt.Println(sum)
-
 	elapsed := time.Since(start)
 	log.Printf("Execution time: %s", elapsed)
 }
@@ -84,38 +82,76 @@ func getPos(grid *Grid, x, y int) (*Node, error) {
 }
 
 func findReflection(grid *Grid) {
-outX:
-	for x := 1; x < grid.width; x++ {
-		i := 1
-		for {
-			if x-i < 0 || x+i > grid.width { // Improve i > 2 to check how many should be the same.
-				grid.reflectionLine = x
-				grid.isVertical = true
-				continue outX
-			} else if x-i >= 0 && x+i <= grid.width && getColumn(grid, x-i) == getColumn(grid, x+i-1) {
-				i++
+	getReflectionLine(grid, true)
+	getReflectionLine(grid, false)
+
+	for xx := 0; xx < grid.width; xx++ {
+		for yy := 0; yy < grid.height; yy++ {
+			node, _ := getPos(grid, xx, yy)
+			tmpValue := node.value
+			tmpReflectionLine := grid.reflectionLine
+			tmpIsVertical := grid.isVertical
+
+			if tmpValue == "#" {
+				node.value = "."
 			} else {
-				break
+				node.value = "#"
 			}
+
+			getReflectionLine(grid, true)
+			if grid.reflectionLine != tmpReflectionLine || grid.isVertical != tmpIsVertical {
+				return
+			}
+
+			getReflectionLine(grid, false)
+			if grid.reflectionLine != tmpReflectionLine || grid.isVertical != tmpIsVertical {
+				return
+			}
+
+			// Reset values for next iteration.
+			grid.reflectionLine = tmpReflectionLine
+			grid.isVertical = tmpIsVertical
+			node.value = tmpValue
 		}
 	}
+}
 
-	if grid.reflectionLine == 0 {
-	outY:
-		for y := 1; y < grid.height; y++ {
-			i := 1
+func getReflectionLine(grid *Grid, isVertical bool) {
+	var size int
 
-			for {
-				if y-i < 0 || y+i > grid.height {
-					// is reflection
-					grid.reflectionLine = y
-					grid.isVertical = false
-					continue outY
-				} else if y-i >= 0 && y+i <= grid.height && getRow(grid, y-i) == getRow(grid, y+i-1) {
-					i++
+	if isVertical {
+		size = grid.height
+	} else {
+		size = grid.width
+	}
+
+	for i := 1; i < size; i++ {
+		ii := 1
+		for {
+			var nodeLeft, nodeRight string
+
+			if i-ii >= 0 && i+ii <= size {
+				if isVertical {
+					nodeLeft = getRow(grid, i-ii)
+					nodeRight = getRow(grid, i+ii-1)
+				} else {
+					nodeLeft = getColumn(grid, i-ii)
+					nodeRight = getColumn(grid, i+ii-1)
+				}
+			}
+
+			if i-ii < 0 || i+ii > size {
+				if grid.reflectionLine == 0 || grid.reflectionLine != i || grid.isVertical != isVertical {
+					grid.reflectionLine = i
+					grid.isVertical = isVertical
+					return
 				} else {
 					break
 				}
+			} else if i-ii >= 0 && i+ii <= size && nodeLeft == nodeRight {
+				ii++
+			} else {
+				break
 			}
 		}
 	}
@@ -141,3 +177,10 @@ func getRow(grid *Grid, y int) string {
 
 	return row
 }
+
+/*
+45894
+That's not the right answer; your answer is too high
+. If you're stuck, make sure you're using the full input data; there are also some general tips on the about page, or you can ask for hints on the subreddit.
+ Please wait one minute before trying again. [Return to Day 13]
+*/
