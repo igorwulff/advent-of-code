@@ -26,7 +26,7 @@ type Node struct {
 func main() {
 	start := time.Now()
 
-	file, err := os.Open("./input.txt")
+	file, err := os.Open("./sample.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +62,19 @@ func main() {
 	sum := 0
 
 	for _, grid := range grids {
-		rollNorth(grid)
+		rollWest(grid)
+		for cycle := 0; cycle < 1000000000; cycle++ {
+			if cycle%4 == 0 {
+				rollNorth(grid)
+			} else if cycle%4 == 1 {
+				rollWest(grid)
+			} else if cycle%4 == 2 {
+				rollSouth(grid)
+			} else if cycle%4 == 3 {
+				rollEast(grid)
+			}
+
+		}
 		sum += calcLoad(grid)
 	}
 
@@ -75,7 +87,6 @@ func calcLoad(grid *Grid) int {
 	sum := 0
 	for y := 0; y < grid.height; y++ {
 		row := getRow(grid, y)
-		fmt.Println(row)
 		for _, x := range row {
 			if string(x) == "O" {
 				sum += grid.height - y
@@ -92,12 +103,69 @@ func rollNorth(grid *Grid) {
 		for y := 1; y < grid.height; y++ { // Skip first line.
 			node, _ := getPos(grid, x, y)
 			if node.value == "O" {
-				//for yy := node.y + 1; yy < grid.height; yy++ { // to South
 				for yy := node.y - 1; yy >= 0; yy-- {
 					nextNode, _ := getPos(grid, x, yy)
 
 					if nextNode.value == "." {
 						swapPos(grid, node, x, yy)
+					} else {
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
+func rollSouth(grid *Grid) {
+	for x := 0; x < grid.width; x++ {
+		for y := 1; y < grid.height; y++ { // Skip first line.
+			node, _ := getPos(grid, x, y)
+			if node.value == "O" {
+				for yy := node.y + 1; yy < grid.height; yy++ {
+					nextNode, _ := getPos(grid, x, yy)
+
+					if nextNode.value == "." {
+						swapPos(grid, node, x, yy)
+						node = nextNode
+					} else {
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
+func rollWest(grid *Grid) {
+	for y := 0; y < grid.height; y++ {
+		for x := 0; x < grid.width; x++ {
+			node, _ := getPos(grid, x, y)
+			if node.value == "O" {
+				for xx := node.x - 1; xx >= 0; x-- {
+					nextNode, _ := getPos(grid, xx, y)
+
+					if nextNode.value == "." {
+						swapPos(grid, node, xx, y)
+					} else {
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
+func rollEast(grid *Grid) {
+	for y := 0; y < grid.height; y++ {
+		for x := 1; x < grid.width; x++ {
+			node, _ := getPos(grid, x, y)
+			if node.value == "O" {
+				for xx := node.y + 1; xx < grid.width; xx++ {
+					nextNode, _ := getPos(grid, xx, y)
+
+					if nextNode.value == "." {
+						swapPos(grid, node, xx, y)
 						node = nextNode
 					} else {
 						break
