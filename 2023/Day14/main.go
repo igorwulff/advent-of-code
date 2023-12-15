@@ -26,7 +26,7 @@ type Node struct {
 func main() {
 	start := time.Now()
 
-	file, err := os.Open("./sample.txt")
+	file, err := os.Open("./input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -62,8 +62,7 @@ func main() {
 	sum := 0
 
 	for _, grid := range grids {
-		rollWest(grid)
-		for cycle := 0; cycle < 1000000000; cycle++ {
+		for cycle := 0; cycle < 4000; cycle++ {
 			if cycle%4 == 0 {
 				rollNorth(grid)
 			} else if cycle%4 == 1 {
@@ -75,6 +74,7 @@ func main() {
 			}
 
 		}
+
 		sum += calcLoad(grid)
 	}
 
@@ -87,6 +87,7 @@ func calcLoad(grid *Grid) int {
 	sum := 0
 	for y := 0; y < grid.height; y++ {
 		row := getRow(grid, y)
+		fmt.Println(row)
 		for _, x := range row {
 			if string(x) == "O" {
 				sum += grid.height - y
@@ -108,6 +109,8 @@ func rollNorth(grid *Grid) {
 
 					if nextNode.value == "." {
 						swapPos(grid, node, x, yy)
+						node = nextNode
+						y--
 					} else {
 						break
 					}
@@ -119,7 +122,7 @@ func rollNorth(grid *Grid) {
 
 func rollSouth(grid *Grid) {
 	for x := 0; x < grid.width; x++ {
-		for y := 1; y < grid.height; y++ { // Skip first line.
+		for y := grid.height - 1; y >= 0; y-- { // Skip first line.
 			node, _ := getPos(grid, x, y)
 			if node.value == "O" {
 				for yy := node.y + 1; yy < grid.height; yy++ {
@@ -139,7 +142,7 @@ func rollSouth(grid *Grid) {
 
 func rollWest(grid *Grid) {
 	for y := 0; y < grid.height; y++ {
-		for x := 0; x < grid.width; x++ {
+		for x := 1; x < grid.width; x++ {
 			node, _ := getPos(grid, x, y)
 			if node.value == "O" {
 				for xx := node.x - 1; xx >= 0; x-- {
@@ -147,6 +150,8 @@ func rollWest(grid *Grid) {
 
 					if nextNode.value == "." {
 						swapPos(grid, node, xx, y)
+						node = nextNode
+						x--
 					} else {
 						break
 					}
@@ -158,10 +163,10 @@ func rollWest(grid *Grid) {
 
 func rollEast(grid *Grid) {
 	for y := 0; y < grid.height; y++ {
-		for x := 1; x < grid.width; x++ {
+		for x := grid.width - 1; x >= 0; x-- {
 			node, _ := getPos(grid, x, y)
 			if node.value == "O" {
-				for xx := node.y + 1; xx < grid.width; xx++ {
+				for xx := node.x + 1; xx < grid.width; xx++ {
 					nextNode, _ := getPos(grid, xx, y)
 
 					if nextNode.value == "." {
