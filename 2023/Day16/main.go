@@ -47,25 +47,64 @@ func main() {
 	}
 
 	for _, grid := range grids {
-		moveLight(grid, -1, 0, 0, 0, 0)
-
-		for y := 0; y < grid.height; y++ {
-			for x := 0; x < grid.width; x++ {
-				node, _ := getPos(grid, x, y)
-				if node.touched {
-					fmt.Print("#")
-					sum++
-				} else {
-					fmt.Print(node.value)
-				}
+		for xx := 0; xx < grid.width; xx++ {
+			tmpSum := calcLoad(grid, xx, -1, xx, 0)
+			if tmpSum > sum {
+				sum = tmpSum
 			}
-			fmt.Println()
+			tmpSum = calcLoad(grid, xx, grid.height, xx, grid.height-1)
+			if tmpSum > sum {
+				sum = tmpSum
+			}
+		}
+
+		for yy := 0; yy < grid.height; yy++ {
+			tmpSum := calcLoad(grid, -1, yy, 0, yy)
+			if tmpSum > sum {
+				sum = tmpSum
+			}
+			tmpSum = calcLoad(grid, grid.width, yy, grid.width-1, yy)
+			if tmpSum > sum {
+				sum = tmpSum
+			}
 		}
 	}
 
+	// calcLoad(grid, -1, 0, 0, 0, false);
 	fmt.Println(sum)
 	elapsed := time.Since(start)
 	log.Printf("Execution time: %s", elapsed)
+}
+
+func resetTouched(grid *Grid) {
+	for y := 0; y < grid.height; y++ {
+		for x := 0; x < grid.width; x++ {
+			node, _ := getPos(grid, x, y)
+			node.touched = false
+		}
+	}
+}
+
+func calcLoad(grid *Grid, x, y, nx, ny int) int {
+	moveLight(grid, x, y, nx, ny, 0)
+
+	sum := 0
+	for y := 0; y < grid.height; y++ {
+		for x := 0; x < grid.width; x++ {
+			node, _ := getPos(grid, x, y)
+			if node.touched {
+				fmt.Print("#")
+				sum++
+			} else {
+				fmt.Print(node.value)
+			}
+		}
+		fmt.Println()
+	}
+
+	resetTouched(grid)
+
+	return sum
 }
 
 func moveLight(grid *Grid, x, y, nx, ny, repeat int) {
@@ -129,8 +168,6 @@ func moveLight(grid *Grid, x, y, nx, ny, repeat int) {
 		} else if ny < y {
 			moveLight(grid, nx, ny, nx, ny-1, repeat)
 		}
-	} else {
-		fmt.Println("NO HIT")
 	}
 }
 
