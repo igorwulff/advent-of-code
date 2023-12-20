@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -21,188 +20,63 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	sum := 0
+	var sum int64
 
-	plan := make(map[string]string, 0)
+	plan := make(map[string]int64, 1000000)
 
-	minX := 0
-	minY := 0
-	maxX := 0
-	maxY := 0
-	x := 0
-	y := 0
-	plan["X:"+string(x)+",Y:"+string(y)] = "(#000000)"
+	var x, y int64
+	plan["X:"+string(x)+",Y:"+string(y)] = 0
+
+	steps := make([][]int64, 0)
 	for scanner.Scan() {
 		raw := scanner.Text()
 		text := strings.Split(raw, " ")
-		n, _ := strconv.Atoi(text[1])
-		hex := text[2]
+		//n, _ := strconv.Atoi(text[1])
+		//hex := text[2]
 
-		if text[0] == "R" {
-			i := 0
-			for i = x; i < x+n; i++ {
-				plan[fmt.Sprintf("X:%d,Y:%d", i, y)] = hex
-			}
+		n, _ := strconv.ParseInt(text[2][2:len(text[2])-2], 16, 64)
+		dir, _ := strconv.ParseInt(text[2][len(text[2])-2:len(text[2])-1], 16, 64)
 
-			x = i
-			if x > maxX {
-				maxX = x
-			}
-		} else if text[0] == "L" {
-			i := 0
-			for i = x; i > x-n; i-- {
-				plan[fmt.Sprintf("X:%d,Y:%d", i, y)] = hex
-			}
+		// Between value... Start Length?
+		if dir == 0 {
 
-			x = i
-			if x < minX {
-				minX = x
-			}
+			steps = append(steps, []int64{1, 0, n})
 
-		} else if text[0] == "D" {
-			i := 0
-			for i = y; i < y+n; i++ {
-				plan[fmt.Sprintf("X:%d,Y:%d", x, i)] = hex
-			}
+		} else if dir == 2 {
+			x -= n
+			steps = append(steps, []int64{-1, 0, n})
 
-			y = i
-			if y > maxY {
-				maxY = y
-			}
-		} else if text[0] == "U" {
-			i := 0
-			for i = y; i > y-n; i-- {
-				plan[fmt.Sprintf("X:%d,Y:%d", x, i)] = hex
-			}
+		} else if dir == 1 {
+			y += n
 
-			y = i
-			if y < minY {
-				minY = y
-			}
+			steps = append(steps, []int64{0, 1, n})
+		} else if dir == 3 {
+			y -= n
+
+			steps = append(steps, []int64{0, -1, n})
+
 		}
 	}
 
-	for y := minY; y <= maxY; y++ {
-		fill := false
-		for x := minX; x <= maxX; x++ {
-
-			test := fmt.Sprintf("X:%d,Y:%d", x, y)
-			if plan[test] == "" {
-				if fill {
-					fmt.Print("@")
-					plan[fmt.Sprintf("X:%d,Y:%d", x, y)] = "1"
-					sum++
-				} else {
-					fmt.Print(".")
-				}
-			} else {
-				value := plan[fmt.Sprintf("X:%d,Y:%d", x, y)]
-				if value != "" {
-					fill = !fill
-					fmt.Print("#")
-					sum++
-				}
-				for xx := x + 1; xx <= maxX; xx++ {
-					value := plan[fmt.Sprintf("X:%d,Y:%d", xx, y)]
-					if value != "" { // Continous # symbols.
-						fmt.Print("#")
-						sum++
-						x++
-					} else {
-
-						valueP := plan[fmt.Sprintf("X:%d,Y:%d", xx+1, y-1)]
-						if fill && valueP != "" {
-							fill = true
-						} else if !fill && valueP == "1" {
-							fill = true
-						} else {
-							fill = false
-						}
-
-						break
-					}
-				}
-			}
-		}
-
-		fmt.Println()
-	}
+	sum = calc(steps)
 
 	fmt.Println(sum)
 	elapsed := time.Since(start)
 	log.Printf("Execution time: %s", elapsed)
 }
 
-func resetTouched(grid *Grid) {
-	for y := 0; y < grid.height; y++ {
-		for x := 0; x < grid.width; x++ {
-			node, _ := getPos(grid, x, y)
-			node.touched = false
-		}
-	}
-}
+func calc(steps [][]int64) int64 {
+	var pos int64
+	ans := 1.0
 
-func calcLoad(grid *Grid, x, y, nx, ny int) int {
+	for _, step := range steps {
+		x := step[0]
+		y := step[1]
+		n := step[2]
 
-	sum := 0
-	for y := 0; y < grid.height; y++ {
-		for x := 0; x < grid.width; x++ {
-			node, _ := getPos(grid, x, y)
-			if node.touched {
-				fmt.Print("#")
-				sum++
-			} else {
-				fmt.Print(node.value)
-			}
-		}
-		fmt.Println()
+		pos += x * n
+		ans += float64(y*n*pos) + float64(n)/2.0
 	}
 
-	resetTouched(grid)
-
-	return sum
+	return int64(ans)
 }
-
-type Grid struct {
-	width  int
-	height int
-	cells  []*Node
-}
-
-type Node struct {
-	value   string
-	touched bool
-	x       int
-	y       int
-}
-
-func getColumn(grid *Grid, x int) string {
-	row := ""
-
-	for y := 0; y < grid.height; y++ {
-		node, _ := getPos(grid, x, y)
-		row += node.value
-	}
-	return row
-}
-
-func getRow(grid *Grid, y int) string {
-	row := ""
-
-	for x := 0; x < grid.width; x++ {
-		node, _ := getPos(grid, x, y)
-		row += node.value
-	}
-
-	return row
-}
-
-func getPos(grid *Grid, x, y int) (*Node, error) {
-	if x < 0 || x >= grid.width || y < 0 || y >= grid.height {
-		return nil, errors.New("Invalid position")
-	}
-	return grid.cells[(y*grid.width)+x], nil
-}
-
-// 137310 Answer is to high...
-//That's not the right answer; your answer is too high. If you're stuck, make sure you're using the full input data; there are also some general tips on the about page, or you can ask for hints on the subreddit. Please wait one minute before trying again. [Return to Day 18]
