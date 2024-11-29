@@ -1,4 +1,4 @@
-module github.com/igorwulff/aoc-skeleton
+module github.com/igorwulff/advent-of-code
 
 go 1.22.2
 
