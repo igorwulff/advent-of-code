@@ -1,26 +1,21 @@
-# aoc-skeleton
-This repository serves as a skeleton for creating new Advent of Code (AoC) projects. You can use this template to quickly set up a new repository for solving AoC challenges.
+# Advent of Code - Igor Wulff
+
+This repository contains my personal solutions for the Advent of Code (AoC) challenges. It is built on the aoc-skeleton repository.
 
 ## Getting Started
 
 1. **Clone the repository:**
     ```sh
-    git clone https://github.com/igorwulff/aoc-skeleton.git
-    cd aoc-skeleton
+    git clone https://github.com/igorwulff/advent-of-code.git
+    cd advent-of-code
     ```
 
-2. **Change the module name:**
-    Update the `go.mod` file with your new module name.
-    ```go
-    module github.com/yourusername/your-new-repo
-    ```
-
-3. **Install dependencies:**
+2. **Install dependencies:**
     ```sh
     go mod tidy
     ```
 
-4. **Run the application:**
+3. **Run the application:**
     ```sh
     go run main.go
     ```
