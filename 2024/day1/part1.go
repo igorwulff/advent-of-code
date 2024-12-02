@@ -14,7 +14,7 @@ func Part1(input string) string {
 	sortAsc(&left)
 	sortAsc(&right)
 
-	return fmt.Sprint(getDist(left, right))
+	return fmt.Sprint(getSimilarity(left, right))
 }
 
 func sortAsc(input *[]int) {
@@ -23,7 +23,7 @@ func sortAsc(input *[]int) {
 	})
 }
 
-func getDist(left []int, right []int) int {
+func getSimilarity(left []int, right []int) int {
 	sum := 0
 
 	for i, l := range left {
