@@ -16,3 +16,18 @@ func TestSorting(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, input)
 	}
 }
+
+func TestPart1Sample(t *testing.T) {
+	input := `3   4
+4   3
+2   5
+1   3
+3   9
+3   3`
+	expected := "11"
+	output := Part1(input)
+
+	if output != expected {
+		t.Errorf("Expected %s, got %s", expected, output)
+	}
+}
