@@ -1,12 +1,18 @@
 package main
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
-func TestPart1(t *testing.T) {
-	input := "your test input here"
-	expected := "42"
-	result := Part1(input)
-	if result != expected {
-		t.Errorf("Expected %s, got %s", expected, result)
+func TestSorting(t *testing.T) {
+	input := []int{3, 4, 2, 1, 3, 3}
+
+	expected := []int{1, 2, 3, 3, 3, 4}
+
+	sortAsc(&input)
+
+	if !reflect.DeepEqual(input, expected) {
+		t.Errorf("Expected %v, got %v", expected, input)
 	}
 }
