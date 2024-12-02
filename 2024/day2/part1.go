@@ -12,7 +12,7 @@ func Part1(input string) string {
 
 	count := 0
 	for _, level := range levels {
-		if level.IsSafe() {
+		if level.IsSafe(false) {
 			count++
 		}
 	}

@@ -11,34 +11,53 @@ type report struct {
 	levels []int
 }
 
-func (r report) IsSafe() bool {
+func (r report) IsSafe(tolerate bool) bool {
 	var sortAsc bool
 
-	// Determine sorting
-	if r.levels[0] < r.levels[1] {
-		sortAsc = true
-	} else {
-		sortAsc = false
-	}
+	for i := 0; i < len(r.levels); i++ {
+		faulty := false
+		levels := r.levels
 
-	for i := 1; i < len(r.levels); i++ {
-		if sortAsc {
-			if r.levels[i] < r.levels[i-1] {
-				return false
-			}
+		if tolerate {
+			levels = make([]int, 0)
+			levels = append(levels, r.levels[:i]...)
+			levels = append(levels, r.levels[i+1:]...)
+		}
+
+		// Determine sorting
+		if levels[0] < levels[1] {
+			sortAsc = true
 		} else {
-			if r.levels[i] > r.levels[i-1] {
-				return false
+			sortAsc = false
+		}
+
+		for i := 1; i < len(levels); i++ {
+			if sortAsc {
+				if levels[i] < levels[i-1] {
+					faulty = true
+				}
+			} else {
+				if levels[i] > levels[i-1] {
+					faulty = true
+				}
+			}
+
+			differ := utils.AbsInt(levels[i] - levels[i-1])
+			if differ < 1 || differ > 3 {
+				faulty = true
 			}
 		}
 
-		differ := utils.AbsInt(r.levels[i] - r.levels[i-1])
-		if differ < 1 || differ > 3 {
+		if !faulty {
+			return true
+		}
+
+		if !tolerate {
 			return false
 		}
 	}
 
-	return true
+	return false
 }
 
 func ParseInput(input string) []report {
