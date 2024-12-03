@@ -17,7 +17,9 @@ func Part2(input string) string {
 		if match[0] == "do()" {
 			enabled = true
 			continue
-		} else if match[0] == "don't()" {
+		}
+
+		if match[0] == "don't()" {
 			enabled = false
 			continue
 		}
