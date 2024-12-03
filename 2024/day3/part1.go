@@ -8,12 +8,7 @@ import (
 
 // Exported function to be called by the main application
 func Part1(input string) string {
-	r, err := regexp.Compile(`mul\(([0-9]+),([0-9]+)\)`)
-
-	if err != nil {
-		return "Regex can not be compiled."
-	}
-
+	r := regexp.MustCompile(`mul\(([0-9]+),([0-9]+)\)`)
 	matches := r.FindAllStringSubmatch(input, -1)
 
 	output := 0

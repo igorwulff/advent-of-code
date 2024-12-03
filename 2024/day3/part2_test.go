@@ -5,10 +5,12 @@ import (
 )
 
 func TestPart2Sample(t *testing.T) {
-	/*expected := "11"
-	output := Part1(input)
+	input := `xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))`
+	expected := "48"
+
+	output := Part2(input)
 
 	if output != expected {
 		t.Errorf("Expected %s, got %s", expected, output)
-	}*/
+	}
 }
