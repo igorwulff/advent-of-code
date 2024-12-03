@@ -17,18 +17,18 @@ func Part2(input string) string {
 		if match[0] == "do()" {
 			enabled = true
 			continue
-		}
-
-		if match[0] == "don't()" {
+		} else if match[0] == "don't()" {
 			enabled = false
 			continue
 		}
 
-		if enabled {
-			l, _ := strconv.Atoi(match[1])
-			r, _ := strconv.Atoi(match[2])
-			output += l * r
+		if !enabled {
+			continue
 		}
+
+		l, _ := strconv.Atoi(match[1])
+		r, _ := strconv.Atoi(match[2])
+		output += l * r
 	}
 
 	return fmt.Sprint(output)
