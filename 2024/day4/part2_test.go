@@ -17,7 +17,7 @@ M.M.M.M.M.
 ..........`
 
 	expected := "9"
-	output := Part1(input)
+	output := Part2(input)
 
 	if output != expected {
 		t.Errorf("Expected %s, got %s", expected, output)
