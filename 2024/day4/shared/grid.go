@@ -99,6 +99,3 @@ func (g Grid) FindWordDiagonal(word string, x, y int) int {
 
 	return occ
 }
-
-// XMAS
-// SAMX
