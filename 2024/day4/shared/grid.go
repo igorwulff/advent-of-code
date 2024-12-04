@@ -37,10 +37,8 @@ func (g Grid) FindX() int {
 	for _, pos := range g.Starts[string("A")] {
 		y, x := g.GetXY(pos)
 
-		if g.FindWordDiagonal("MAS", x-1, y-1) == 1 || g.FindWordDiagonal("SAM", x-1, y-1) == 1 {
-			if g.FindWordDiagonal("MAS", x+1, y-1) == 1 || g.FindWordDiagonal("SAM", x+1, y-1) == 1 {
-				occ++
-			}
+		if g.MatchCrossWord(x, y) {
+			occ++
 		}
 	}
 
@@ -49,6 +47,17 @@ func (g Grid) FindX() int {
 
 func (g Grid) GetXY(pos int) (int, int) {
 	return pos / g.Width, pos % g.Width
+}
+
+func (g Grid) MatchCrossWord(x, y int) bool {
+	if x-1 < 0 || y-1 < 0 || x+1 >= g.Width || y+1 >= g.Height {
+		return false
+	}
+
+	wl := g.Rows[y-1][x-1] + g.Rows[y][x] + g.Rows[y+1][x+1]
+	wr := g.Rows[y-1][x+1] + g.Rows[y][x] + g.Rows[y+1][x-1]
+
+	return (wl == "MAS" || wl == "SAM") && (wr == "MAS" || wr == "SAM")
 }
 
 func (g Grid) FindWordInRow(word string, x, y int) bool {
