@@ -33,6 +33,12 @@ func (g Grid) FindWords(word string) int {
 	return occ
 }
 
+func (g Grid) FindX() int {
+	occ := 0
+
+	return occ
+}
+
 func (g Grid) FindWordInRow(word string, x, y int) bool {
 	if (x + len(word)) > g.Width {
 		return false

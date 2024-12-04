@@ -8,7 +8,7 @@ import (
 
 // Exported function to be called by the main application
 func Part1(input string) string {
-	grid := shared.ParseInput(input)
+	grid := shared.ParseInput(input, []string{"X", "S"})
 
 	return fmt.Sprint(grid.FindWords("XMAS") + grid.FindWords("SAMX"))
 }

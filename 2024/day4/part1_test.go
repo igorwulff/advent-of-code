@@ -33,7 +33,7 @@ func TestDiagonalXMASPart1(t *testing.T) {
 .M..
 X...`
 
-	grid := shared.ParseInput(input)
+	grid := shared.ParseInput(input, []string{"X", "S"})
 	output := fmt.Sprint(grid.FindWords("XMAS"))
 
 	expected := "0"
@@ -48,7 +48,7 @@ func TestDiagonalSAMXPart1(t *testing.T) {
 .MM.
 X..X`
 
-	grid := shared.ParseInput(input)
+	grid := shared.ParseInput(input, []string{"X", "S"})
 	output := fmt.Sprint(grid.FindWords("SAMX"))
 
 	expected := "2"

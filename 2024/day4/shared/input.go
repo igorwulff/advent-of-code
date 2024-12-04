@@ -1,10 +1,11 @@
 package shared
 
 import (
+	"slices"
 	"strings"
 )
 
-func ParseInput(input string) Grid {
+func ParseInput(input string, values []string) Grid {
 	lines := strings.Split(input, "\n")
 
 	grid := Grid{
@@ -18,12 +19,15 @@ func ParseInput(input string) Grid {
 		if line == "" {
 			continue
 		}
+
 		row := strings.Split(line, "")
 
 		for x, cell := range row {
-			if cell == "X" || cell == "S" {
-				grid.Starts[cell] = append(grid.Starts[cell], (grid.Width*y)+x)
+			if !slices.Contains(values, cell) {
+				continue
 			}
+
+			grid.Starts[cell] = append(grid.Starts[cell], (grid.Width*y)+x)
 		}
 
 		grid.Rows = append(grid.Rows, row)
