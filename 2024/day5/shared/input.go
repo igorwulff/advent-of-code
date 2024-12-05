@@ -3,14 +3,12 @@ package shared
 import (
 	"strconv"
 	"strings"
-
-	"github.com/elliotchance/orderedmap/v3"
 )
 
 func ParseInput(input string) Printer {
 	printer := Printer{
 		Rules:   make(map[int][]int),
-		Updates: orderedmap.NewOrderedMap[int, []int](),
+		Updates: make([][]int, 0),
 	}
 
 	lines := strings.Split(input, "\n")
@@ -36,7 +34,7 @@ func ParseInput(input string) Printer {
 				parts[i], _ = strconv.Atoi(part)
 			}
 
-			printer.Updates.Set(updates, parts)
+			printer.Updates = append(printer.Updates, parts)
 			updates++
 		}
 	}

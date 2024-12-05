@@ -2,36 +2,31 @@ package shared
 
 import (
 	"reflect"
-	"sort"
-
-	"github.com/elliotchance/orderedmap/v3"
+	"slices"
 )
 
 type Printer struct {
 	Rules   map[int][]int
-	Updates *orderedmap.OrderedMap[int, []int]
+	Updates [][]int
 }
 
 func (p Printer) GetSorted(faulty bool) int {
 	sum := 0
 
-	for el := p.Updates.Front(); el != nil; el = el.Next() {
-		sorted := make([]int, len(el.Value))
-		copy(sorted, el.Value)
+	for _, update := range p.Updates {
+		sorted := make([]int, len(update))
+		copy(sorted, update)
 
-		sort.Slice(sorted, func(i, j int) bool {
-			r := p.Rules[sorted[j]]
-
-			for _, v := range r {
-				if v == sorted[i] {
-					return false
+		slices.SortFunc(sorted, func(a, b int) int {
+			for _, v := range p.Rules[a] {
+				if v == b {
+					return -1
 				}
 			}
-
-			return true
+			return 1
 		})
 
-		if faulty == reflect.DeepEqual(sorted, el.Value) {
+		if faulty == reflect.DeepEqual(sorted, update) {
 			sum += sorted[(len(sorted)-1)/2]
 		}
 	}
