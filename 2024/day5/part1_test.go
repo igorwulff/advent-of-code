@@ -1,8 +1,6 @@
 package main
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestPart1Sample(t *testing.T) {
 	input := `47|53
