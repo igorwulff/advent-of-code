@@ -16,8 +16,7 @@ func Part1(input string) string {
 		}
 	}
 
+	grid.Draw(guard)
+
 	return fmt.Sprint(len(guard.Visited))
 }
-
-// 3392 to low
-// 3393 to low

@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"fmt"
 	"slices"
 )
 
@@ -35,66 +36,18 @@ func (g *Grid) GetPos(x, y int) int {
 	return (g.Width * y) + x
 }
 
-type Dir int
-
-const (
-	Top Dir = iota
-	Right
-	Bottom
-	Left
-)
-
-type Guard struct {
-	X       int
-	Y       int
-	CurDir  Dir
-	Path    []int
-	Visited map[int]bool
-}
-
-func (g *Guard) Move(grid Grid) bool {
-	x := g.X
-	y := g.Y
-
-	switch g.CurDir {
-	case Top:
-		y--
-	case Right:
-		x++
-	case Bottom:
-		y++
-	case Left:
-		x--
-	}
-
-	if !grid.InBounds(x, y) {
-		return false
-	}
-
-	if grid.IsObstacle(x, y) {
-		g.CurDir = (g.CurDir + 1) % 4
-	} else {
-		g.SetPos(grid, x, y)
-	}
-
-	return true
-}
-
-func (g *Guard) GetVisited() []int {
-	visited := make([]int, 0)
-
-	for _, pos := range g.Path {
-		if !slices.Contains(visited, pos) {
-			visited = append(visited, pos)
+func (g *Grid) Draw(guard Guard) {
+	for y := 0; y < g.Height; y++ {
+		for x := 0; x < g.Width; x++ {
+			pos := g.GetPos(x, y)
+			if guard.Visited[pos] {
+				fmt.Print("X")
+			} else if g.IsObstacle(x, y) {
+				fmt.Print("#")
+			} else {
+				fmt.Print(".")
+			}
 		}
+		fmt.Println()
 	}
-
-	return visited
-}
-
-func (g *Guard) SetPos(grid Grid, x, y int) {
-	g.X = x
-	g.Y = y
-	g.Visited[grid.GetPos(x, y)] = true
-	g.Path = append(g.Path, grid.GetPos(x, y))
 }
