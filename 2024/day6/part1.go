@@ -11,12 +11,10 @@ func Part1(input string) string {
 	grid, guard := shared.ParseInput(input)
 
 	for {
-		if !guard.Move(grid) {
+		if m, _ := guard.Move(grid); !m {
 			break
 		}
 	}
-
-	grid.Draw(guard)
 
 	return fmt.Sprint(len(guard.Visited))
 }

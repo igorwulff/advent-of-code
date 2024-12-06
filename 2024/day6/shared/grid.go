@@ -24,6 +24,10 @@ func (g *Grid) SetObstacle(x, y int) {
 	g.Obstacles = append(g.Obstacles, g.GetPos(x, y))
 }
 
+func (g *Grid) RemoveLastObstracle() {
+	g.Obstacles = g.Obstacles[:len(g.Obstacles)-1]
+}
+
 func (g *Grid) GetX(pos int) int {
 	return pos % g.Width
 }

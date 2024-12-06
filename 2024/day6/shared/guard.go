@@ -1,5 +1,7 @@
 package shared
 
+import "fmt"
+
 type Dir int
 
 const (
@@ -17,7 +19,14 @@ type Guard struct {
 	Visited map[int]bool
 }
 
-func (g *Guard) Move(grid Grid) bool {
+func (g *Guard) Reset(grid Grid, x, y int) {
+	g.CurDir = Top
+	g.Path = make([]int, 0)
+	g.Visited = make(map[int]bool)
+	g.SetPos(grid, x, y)
+}
+
+func (g *Guard) Move(grid Grid) (bool, error) {
 	x := g.X
 	y := g.Y
 
@@ -33,7 +42,7 @@ func (g *Guard) Move(grid Grid) bool {
 	}
 
 	if !grid.InBounds(x, y) {
-		return false
+		return false, nil
 	}
 
 	if grid.IsObstacle(x, y) {
@@ -42,7 +51,11 @@ func (g *Guard) Move(grid Grid) bool {
 		g.SetPos(grid, x, y)
 	}
 
-	return true
+	if len(g.Path) > 10000 {
+		return false, fmt.Errorf("Guard got stuck")
+	}
+
+	return true, nil
 }
 
 func (g *Guard) SetPos(grid Grid, x, y int) {
