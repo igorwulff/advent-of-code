@@ -16,13 +16,13 @@ type Guard struct {
 	Y       int
 	CurDir  Dir
 	Path    []int
-	Visited map[int]bool
+	Visited map[int]Dir
 }
 
 func (g *Guard) Reset(grid Grid, x, y int) {
 	g.CurDir = Top
 	g.Path = make([]int, 0)
-	g.Visited = make(map[int]bool)
+	g.Visited = make(map[int]Dir)
 	g.SetPos(grid, x, y)
 }
 
@@ -47,13 +47,16 @@ func (g *Guard) Move(grid Grid) (bool, error) {
 
 	if grid.IsObstacle(x, y) {
 		g.CurDir = (g.CurDir + 1) % 4
-	} else {
-		g.SetPos(grid, x, y)
+		return true, nil
 	}
 
-	if len(g.Path) > 10000 {
-		return false, fmt.Errorf("Guard got stuck")
+	if val, ok := g.Visited[grid.GetPos(x, y)]; ok {
+		if val == g.CurDir {
+			return false, fmt.Errorf("guard got stuck")
+		}
 	}
+
+	g.SetPos(grid, x, y)
 
 	return true, nil
 }
@@ -62,6 +65,6 @@ func (g *Guard) SetPos(grid Grid, x, y int) {
 	g.X = x
 	g.Y = y
 	pos := grid.GetPos(x, y)
-	g.Visited[pos] = true
+	g.Visited[pos] = g.CurDir
 	g.Path = append(g.Path, pos)
 }

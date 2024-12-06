@@ -43,5 +43,3 @@ func Part2(input string) string {
 
 	return fmt.Sprint(stuck)
 }
-
-// 16085 to high

@@ -1,13 +1,8 @@
 package shared
 
-import (
-	"fmt"
-)
-
 type Grid struct {
 	Width     int
 	Height    int
-	Guard     Guard
 	Obstacles map[int]bool
 }
 
@@ -37,20 +32,4 @@ func (g *Grid) GetY(pos int) int {
 
 func (g *Grid) GetPos(x, y int) int {
 	return (g.Width * y) + x
-}
-
-func (g *Grid) Draw(guard Guard) {
-	for y := 0; y < g.Height; y++ {
-		for x := 0; x < g.Width; x++ {
-			pos := g.GetPos(x, y)
-			if guard.Visited[pos] {
-				fmt.Print("X")
-			} else if g.IsObstacle(x, y) {
-				fmt.Print("#")
-			} else {
-				fmt.Print(".")
-			}
-		}
-		fmt.Println()
-	}
 }

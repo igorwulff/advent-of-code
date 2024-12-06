@@ -15,7 +15,7 @@ func ParseInput(input string) (Grid, Guard) {
 
 	guard := Guard{
 		Path:    make([]int, 0),
-		Visited: make(map[int]bool),
+		Visited: make(map[int]Dir),
 	}
 
 	for y, line := range lines {
