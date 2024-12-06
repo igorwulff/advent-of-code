@@ -1,6 +1,8 @@
 package shared
 
-import "slices"
+import (
+	"slices"
+)
 
 type Grid struct {
 	Width     int
@@ -43,10 +45,11 @@ const (
 )
 
 type Guard struct {
-	X      int
-	Y      int
-	CurDir Dir
-	Path   []int
+	X       int
+	Y       int
+	CurDir  Dir
+	Path    []int
+	Visited map[int]bool
 }
 
 func (g *Guard) Move(grid Grid) bool {
@@ -71,9 +74,7 @@ func (g *Guard) Move(grid Grid) bool {
 	if grid.IsObstacle(x, y) {
 		g.CurDir = (g.CurDir + 1) % 4
 	} else {
-		g.X = x
-		g.Y = y
-		g.Path = append(g.Path, grid.GetPos(x, y))
+		g.SetPos(grid, x, y)
 	}
 
 	return true
@@ -89,4 +90,11 @@ func (g *Guard) GetVisited() []int {
 	}
 
 	return visited
+}
+
+func (g *Guard) SetPos(grid Grid, x, y int) {
+	g.X = x
+	g.Y = y
+	g.Visited[grid.GetPos(x, y)] = true
+	g.Path = append(g.Path, grid.GetPos(x, y))
 }

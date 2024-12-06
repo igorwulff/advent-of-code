@@ -16,5 +16,8 @@ func Part1(input string) string {
 		}
 	}
 
-	return fmt.Sprint(len(guard.GetVisited()))
+	return fmt.Sprint(len(guard.Visited))
 }
+
+// 3392 to low
+// 3393 to low

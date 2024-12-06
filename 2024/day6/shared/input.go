@@ -14,7 +14,8 @@ func ParseInput(input string) (Grid, Guard) {
 	}
 
 	guard := Guard{
-		Path: make([]int, 0),
+		Path:    make([]int, 0),
+		Visited: make(map[int]bool),
 	}
 
 	for y, line := range lines {
@@ -30,8 +31,7 @@ func ParseInput(input string) (Grid, Guard) {
 			}
 
 			if cell == "^" {
-				guard.X = x
-				guard.Y = y
+				guard.SetPos(grid, x, y)
 			}
 		}
 	}
