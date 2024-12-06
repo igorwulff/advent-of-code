@@ -19,13 +19,6 @@ type Guard struct {
 	Visited map[int]Dir
 }
 
-func (g *Guard) Reset(grid Grid, x, y int) {
-	g.CurDir = Top
-	g.Path = make([]int, 0)
-	g.Visited = make(map[int]Dir)
-	g.SetPos(grid, x, y)
-}
-
 func (g *Guard) Move(grid Grid) (bool, error) {
 	x := g.X
 	y := g.Y

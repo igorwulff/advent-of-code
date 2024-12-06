@@ -5,6 +5,6 @@ go 1.23.0
 toolchain go1.23.4
 
 require (
-	github.com/elliotchance/orderedmap/v3 v3.0.0
 	github.com/igorwulff/aoc v1.0.4
+	golang.org/x/sync v0.10.0
 )

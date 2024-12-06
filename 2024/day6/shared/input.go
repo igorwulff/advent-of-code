@@ -7,11 +7,10 @@ import (
 func ParseInput(input string) (Grid, Guard) {
 	lines := strings.Split(input, "\n")
 
-	grid := Grid{
-		Width:     len(lines[0]),
-		Height:    len(lines),
-		Obstacles: make(map[int]bool, 0),
-	}
+	Width = len(lines[0])
+	Height = len(lines)
+
+	grid := Grid{}
 
 	guard := Guard{
 		Path:    make([]int, 0),
@@ -27,7 +26,7 @@ func ParseInput(input string) (Grid, Guard) {
 
 		for x, cell := range row {
 			if cell == "#" {
-				grid.SetObstacle(x, y)
+				Obstacles.Store(grid.GetPos(x, y), true)
 			}
 
 			if cell == "^" {
