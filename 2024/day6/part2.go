@@ -11,66 +11,46 @@ import (
 func Part2(input string) string {
 	grid, guard := shared.ParseInput(input)
 
-	startx := guard.X
-	starty := guard.Y
-
 	type Job struct {
 		X, Y int
 	}
 
-	jobs := make(chan Job, shared.Width*shared.Height)
-	results := make(chan bool, shared.Width*shared.Height)
+	size := shared.Width * shared.Height
+
+	jobs := make(chan Job, size)
+	results := make(chan bool, size)
 
 	// Worker function
 	worker := func(jobs <-chan Job, results chan<- bool) {
 		for job := range jobs {
-			// Skip the starting position
-			if job.X == startx && job.Y == starty {
-				results <- false
-				continue
-			}
-
-			// Skip obstacles
-			if grid.IsObstacle(job.X, job.Y) {
-				results <- false
-				continue
-			}
-
 			copiedGrid := shared.Grid{
 				ObstacleX: job.X,
 				ObstacleY: job.Y,
 			}
 			copiedGuard := shared.Guard{
-				X:       startx,
-				Y:       starty,
-				Path:    make([]int, 0),
-				Visited: make(map[int]shared.Dir),
+				X:       guard.X,
+				Y:       guard.Y,
+				Path:    make([]int, 0, 100),
+				Visited: make(map[int]shared.Dir, 100),
 			}
 
-			// Set obstacle and simulate guard movement
-			copiedGrid.ObstacleX = job.X
-			copiedGrid.ObstacleY = job.Y
-
-			stuck := false
 			for {
-				moved, err := copiedGuard.Move(copiedGrid)
-				if !moved {
+				if m, err := copiedGuard.Move(copiedGrid); !m {
 					if err != nil {
-						stuck = true
+						results <- true
 					}
 					break
 				}
 			}
 
-			results <- stuck
+			results <- false
 		}
 	}
 
 	// Launch workers
-	numWorkers := shared.Width * shared.Height
 	var wg sync.WaitGroup
-	for i := 0; i < numWorkers; i++ {
-		wg.Add(1)
+	wg.Add(size)
+	for range size {
 		go func() {
 			defer wg.Done()
 			worker(jobs, results)
@@ -81,6 +61,16 @@ func Part2(input string) string {
 	go func() {
 		for y := 0; y < shared.Height; y++ {
 			for x := 0; x < shared.Width; x++ {
+				// Skip starting position
+				if x == guard.X && y == guard.Y {
+					continue
+				}
+
+				// Skip obstacles
+				if grid.IsObstacle(x, y) {
+					continue
+				}
+
 				jobs <- Job{X: x, Y: y}
 			}
 		}
@@ -94,12 +84,12 @@ func Part2(input string) string {
 	}()
 
 	// Collect results
-	stuckCount := 0
+	stuck := 0
 	for result := range results {
 		if result {
-			stuckCount++
+			stuck++
 		}
 	}
 
-	return fmt.Sprint(stuckCount)
+	return fmt.Sprint(stuck)
 }

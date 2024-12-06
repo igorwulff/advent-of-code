@@ -19,17 +19,13 @@ func (r report) IsSafe(tolerate bool) bool {
 		levels := r.levels
 
 		if tolerate {
-			levels = make([]int, 0)
+			levels = make([]int, 0, len(r.levels)-1)
 			levels = append(levels, r.levels[:i]...)
 			levels = append(levels, r.levels[i+1:]...)
 		}
 
 		// Determine sorting
-		if levels[0] < levels[1] {
-			sortAsc = true
-		} else {
-			sortAsc = false
-		}
+		sortAsc = levels[0] < levels[1]
 
 		for i := 1; i < len(levels); i++ {
 			if sortAsc {

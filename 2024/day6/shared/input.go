@@ -30,7 +30,7 @@ func ParseInput(input string) (Grid, Guard) {
 			}
 
 			if cell == "^" {
-				guard.SetPos(grid, x, y)
+				guard.SetPos(x, y, grid.GetPos(x, y))
 			}
 		}
 	}

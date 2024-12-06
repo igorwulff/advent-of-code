@@ -11,8 +11,9 @@ import (
 // Exported function to be called by the main application
 func Part1(input string) string {
 	left, right := shared.ParseInput(input)
-	sortAsc(&left)
-	sortAsc(&right)
+
+	sort.Ints(left)
+	sort.Ints(right)
 
 	return fmt.Sprint(getSimilarity(left, right))
 }
@@ -23,12 +24,11 @@ func sortAsc(input *[]int) {
 	})
 }
 
-func getSimilarity(left []int, right []int) int {
+func getSimilarity(left, right []int) int {
 	sum := 0
 
 	for i, l := range left {
-		r := right[i]
-		sum += utils.AbsInt(r - l)
+		sum += utils.AbsInt(right[i] - l)
 	}
 
 	return sum

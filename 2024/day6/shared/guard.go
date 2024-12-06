@@ -43,21 +43,22 @@ func (g *Guard) Move(grid Grid) (bool, error) {
 		return true, nil
 	}
 
-	if val, ok := g.Visited[grid.GetPos(x, y)]; ok {
+	pos := grid.GetPos(x, y)
+
+	if val, ok := g.Visited[pos]; ok {
 		if val == g.CurDir {
 			return false, fmt.Errorf("guard got stuck")
 		}
 	}
 
-	g.SetPos(grid, x, y)
+	g.SetPos(x, y, pos)
 
 	return true, nil
 }
 
-func (g *Guard) SetPos(grid Grid, x, y int) {
+func (g *Guard) SetPos(x, y, pos int) {
 	g.X = x
 	g.Y = y
-	pos := grid.GetPos(x, y)
 	g.Visited[pos] = g.CurDir
 	g.Path = append(g.Path, pos)
 }
