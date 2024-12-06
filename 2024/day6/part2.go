@@ -36,7 +36,7 @@ func Part2(input string) string {
 				}
 			}
 
-			grid.RemoveLastObstracle()
+			grid.RemoveObstacle(x, y)
 			guard.Reset(grid, startx, starty)
 		}
 	}

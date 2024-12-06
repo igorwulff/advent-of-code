@@ -10,7 +10,7 @@ func ParseInput(input string) (Grid, Guard) {
 	grid := Grid{
 		Width:     len(lines[0]),
 		Height:    len(lines),
-		Obstacles: make([]int, 0),
+		Obstacles: make(map[int]bool, 0),
 	}
 
 	guard := Guard{

@@ -2,14 +2,13 @@ package shared
 
 import (
 	"fmt"
-	"slices"
 )
 
 type Grid struct {
 	Width     int
 	Height    int
 	Guard     Guard
-	Obstacles []int
+	Obstacles map[int]bool
 }
 
 func (g Grid) InBounds(x, y int) bool {
@@ -17,15 +16,15 @@ func (g Grid) InBounds(x, y int) bool {
 }
 
 func (g *Grid) IsObstacle(x, y int) bool {
-	return slices.Contains(g.Obstacles, g.GetPos(x, y))
+	return g.Obstacles[g.GetPos(x, y)]
 }
 
 func (g *Grid) SetObstacle(x, y int) {
-	g.Obstacles = append(g.Obstacles, g.GetPos(x, y))
+	g.Obstacles[g.GetPos(x, y)] = true
 }
 
-func (g *Grid) RemoveLastObstracle() {
-	g.Obstacles = g.Obstacles[:len(g.Obstacles)-1]
+func (g *Grid) RemoveObstacle(x, y int) {
+	delete(g.Obstacles, g.GetPos(x, y))
 }
 
 func (g *Grid) GetX(pos int) int {
