@@ -21,6 +21,10 @@ func (e Equation) IsValid() bool {
 }
 
 func (e Equation) Calc(depth, value int) []int {
+	if value > e.Result {
+		return []int{}
+	}
+
 	if depth == len(e.Values)-1 {
 		return []int{value}
 	}
