@@ -1,6 +1,8 @@
 package shared
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type Equation struct {
 	Result int
@@ -29,16 +31,15 @@ func (e Equation) Calc(depth, value int) []int {
 		return []int{value}
 	}
 
-	addResults := e.Calc(depth+1, value+e.Values[depth+1])
-	mulResults := e.Calc(depth+1, value*e.Values[depth+1])
+	add := e.Calc(depth+1, value+e.Values[depth+1])
+	mul := e.Calc(depth+1, value*e.Values[depth+1])
 
 	if e.Concat {
-		concat := strconv.Itoa(value) + strconv.Itoa(e.Values[depth+1])
-		concatInt, _ := strconv.Atoi(concat)
-		concatResults := e.Calc(depth+1, concatInt)
-		return append(append(addResults, mulResults...), concatResults...)
+		concatString := strconv.Itoa(value) + strconv.Itoa(e.Values[depth+1])
+		concat, _ := strconv.Atoi(concatString)
+		return append(append(add, mul...), e.Calc(depth+1, concat)...)
 	}
 
 	// Combine the results into a single slice
-	return append(addResults, mulResults...)
+	return append(add, mul...)
 }
