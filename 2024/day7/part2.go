@@ -11,7 +11,7 @@ func Part2(input string) string {
 
 	sum := 0
 	for _, e := range equations {
-		e.Concat = true
+		e.UseConcat = true
 		if e.IsValid() {
 			sum += e.Result
 		}
