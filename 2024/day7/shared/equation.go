@@ -41,7 +41,10 @@ func (e Equation) Calc(depth, value int) []int {
 	mul := e.Calc(depth+1, value*e.Values[depth+1])
 
 	if e.UseConcat {
-		return append(append(add, mul...), e.Calc(depth+1, e.Concat(value, e.Values[depth+1]))...)
+		return append(
+			append(add, mul...),
+			e.Calc(depth+1, e.Concat(value, e.Values[depth+1]))...,
+		)
 	}
 
 	// Combine the results into a single slice
