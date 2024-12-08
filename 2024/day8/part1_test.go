@@ -57,8 +57,8 @@ func TestPart1Sample(t *testing.T) {
 ........A...
 .........A..
 ............
-............
-`
+............`
+
 	expected := "14"
 	output := Part1(input)
 
