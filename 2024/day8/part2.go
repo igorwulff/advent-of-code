@@ -9,7 +9,7 @@ import (
 // Exported function to be called by the main application
 func Part2(input string) string {
 	grid := shared.ParseInput(input)
-	locations := make(map[int]bool, 0)
+	locations := make(map[int]struct{}, 0)
 
 	for _, antenna := range grid.Antennas {
 		for _, a1 := range antenna {
@@ -32,7 +32,7 @@ func Part2(input string) string {
 						break
 					}
 
-					locations[grid.GetPos(x, y)] = true
+					locations[grid.GetPos(x, y)] = struct{}{}
 					mul++
 				}
 			}
