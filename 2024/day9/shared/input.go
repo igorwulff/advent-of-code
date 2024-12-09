@@ -15,7 +15,8 @@ func ParseInput(input string) []*File {
 			l, _ := strconv.Atoi(string(c))
 			if k%2 == 0 {
 				file := &File{
-					Id: id,
+					Id:   id,
+					Size: l,
 				}
 				id++
 

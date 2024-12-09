@@ -1,5 +1,6 @@
 package shared
 
 type File struct {
-	Id int
+	Id   int
+	Size int
 }
