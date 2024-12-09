@@ -2,39 +2,13 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
-)
 
-type File struct {
-	Id int
-}
+	"github.com/igorwulff/advent-of-code/2024/day9/shared"
+)
 
 // Exported function to be called by the main application
 func Part1(input string) string {
-	disk := make([]*File, 0)
-
-	lines := strings.Split(input, "\n")
-	id := 0
-	for _, line := range lines {
-		for k, c := range line {
-			l, _ := strconv.Atoi(string(c))
-			if k%2 == 0 {
-				file := &File{
-					Id: id,
-				}
-				id++
-
-				for i := 0; i < l; i++ {
-					disk = append(disk, file)
-				}
-			} else {
-				for i := 0; i < l; i++ {
-					disk = append(disk, nil)
-				}
-			}
-		}
-	}
+	disk := shared.ParseInput(input)
 
 	j := len(disk)
 	for i := 0; i < j; i++ {
