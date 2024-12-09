@@ -37,31 +37,18 @@ func Part1(input string) string {
 	}
 
 	j := len(disk)
-	for i := range len(disk) {
+	for i := 0; i < j; i++ {
 		if disk[i] != nil {
 			continue
 		}
 
-		for {
-			j--
+		for j := len(disk) - 1; j > i; j-- {
 			if disk[j] == nil {
 				continue
 			}
 
 			disk[i] = disk[j]
 			disk[j] = nil
-			break
-		}
-
-		for i := 0; i < len(disk); i++ {
-			if disk[i] == nil {
-				fmt.Print(".")
-			} else {
-				fmt.Print(disk[i].Id)
-			}
-		}
-
-		if i+1 == j-1 {
 			break
 		}
 	}
