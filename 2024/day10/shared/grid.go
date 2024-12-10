@@ -49,11 +49,10 @@ func (g *Grid) FindPath(pos int, ends *map[int]int) {
 
 			next := g.GetPos(xx, yy)
 			if value == 8 && g.Cells[next] == 9 {
-				if _, ok := (*ends)[next]; ok {
-					(*ends)[next]++
-				} else {
-					(*ends)[next] = 1
+				if _, ok := (*ends)[next]; !ok {
+					(*ends)[next] = 0
 				}
+				(*ends)[next]++
 			} else if g.Cells[next] == value+1 {
 				g.FindPath(next, ends)
 			}
