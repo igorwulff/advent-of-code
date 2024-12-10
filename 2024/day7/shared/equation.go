@@ -33,20 +33,21 @@ func (e Equation) Calc(depth, value int) []int {
 		return []int{}
 	}
 
-	if depth == len(e.Values)-1 {
+	depth++
+
+	if depth == len(e.Values) {
 		return []int{value}
 	}
 
-	add := e.Calc(depth+1, value+e.Values[depth+1])
-	mul := e.Calc(depth+1, value*e.Values[depth+1])
+	add := e.Calc(depth, value+e.Values[depth])
+	mul := e.Calc(depth, value*e.Values[depth])
+
+	results := append(add, mul...)
 
 	if e.UseConcat {
-		return append(
-			append(add, mul...),
-			e.Calc(depth+1, e.Concat(value, e.Values[depth+1]))...,
-		)
+		concat := e.Calc(depth, e.Concat(value, e.Values[depth]))
+		results = append(results, concat...)
 	}
 
-	// Combine the results into a single slice
-	return append(add, mul...)
+	return results
 }
