@@ -26,7 +26,7 @@ func Part1(input string) string {
 				x := x1 + (x1 - x2)
 				y := y1 + (y1 - y2)
 
-				if !grid.InBounds(x, y) {
+				if grid.InBounds(x, y) {
 					locations[grid.GetPos(x, y)] = struct{}{}
 				}
 			}
