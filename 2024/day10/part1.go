@@ -54,7 +54,7 @@ func (g *Grid) FindPath(pos int, ends *map[int]struct{}) {
 			}
 
 			next := g.GetPos(xx, yy)
-			if g.Cells[next] == 9 {
+			if value == 8 && g.Cells[next] == 9 {
 				(*ends)[next] = struct{}{}
 			} else if g.Cells[next] == value+1 {
 				g.FindPath(next, ends)
@@ -81,7 +81,13 @@ func Part1(input string) string {
 
 		row := strings.Split(line, "")
 		for x, v := range row {
-			value, _ := strconv.Atoi(v)
+			var value int
+			if v == "." {
+				value = -1
+			} else {
+				value, _ = strconv.Atoi(v)
+			}
+
 			grid.Cells = append(grid.Cells, value)
 
 			if value == 0 {
@@ -94,10 +100,6 @@ func Part1(input string) string {
 	for _, start := range grid.Starts {
 		ends := make(map[int]struct{}, 0)
 		grid.FindPath(start, &ends)
-
-		fmt.Println("X", grid.GetX(start), "Y", grid.GetY(start), "Lenght:", len(ends))
-
-		fmt.Println(ends)
 		sum += len(ends)
 	}
 

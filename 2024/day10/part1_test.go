@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-/*func TestPart1Simple(t *testing.T) {
+func TestPart1Simple(t *testing.T) {
 	input := `0123
 1234
 8765
@@ -19,21 +19,21 @@ import (
 }
 
 func TestPart1Simple2(t *testing.T) {
-	input := `2220222
-2221222
-2222222
+	input := `..90..9
+...1.98
+...2..7
 6543456
-7224227
-8225678
-9298729`
+765.987
+876....
+987....`
 
-	expected := "3"
+	expected := "4"
 	output := Part1(input)
 
 	if output != expected {
 		t.Errorf("Expected %s, got %s", expected, output)
 	}
-}*/
+}
 
 func TestPart1Sample(t *testing.T) {
 	input := `89010123
