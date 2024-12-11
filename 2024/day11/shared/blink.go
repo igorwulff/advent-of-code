@@ -11,8 +11,6 @@ func Blink(i int, value string, memo *map[string]int, mutex *sync.Mutex) int {
 		return 1
 	}
 
-	// Generate a unique key for the current state
-	key := fmt.Sprintf("%d|%s", i, value)
 	i--
 
 	if value == "0" {
@@ -20,6 +18,9 @@ func Blink(i int, value string, memo *map[string]int, mutex *sync.Mutex) int {
 	}
 
 	if len(value)%2 == 0 {
+		// Generate a unique key for the current state
+		key := fmt.Sprintf("%d|%s", i, value)
+
 		// Check if the result is already computed
 		mutex.Lock()
 		if result, exists := (*memo)[key]; exists {
