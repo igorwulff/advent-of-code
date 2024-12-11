@@ -10,8 +10,6 @@ import (
 func Part2(input string) string {
 	disk := shared.ParseInput(input)
 
-	fmt.Println("LENGHT:", len(disk))
-
 	curDir := disk[len(disk)-1].Id
 	for dir := curDir; dir >= 0; dir-- {
 		for i := 0; i < len(disk); i++ {
