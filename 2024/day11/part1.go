@@ -2,40 +2,30 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
+	"sync"
+	"sync/atomic"
+
+	"github.com/igorwulff/advent-of-code/2024/day11/shared"
 )
 
 // Exported function to be called by the main application
 func Part1(input string) string {
 	values := strings.Split(input, " ")
 
-	sum := 0
+	var sum int64 = 0
+	memo := make(map[string]int)
+	var mutex sync.Mutex
+	var wg sync.WaitGroup
+
 	for _, value := range values {
-		sum += Blink(25, value)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			atomic.AddInt64(&sum, int64(shared.Blink(25, value, &memo, &mutex)))
+		}()
 	}
+	wg.Wait()
 
 	return fmt.Sprint(sum)
-}
-
-func Blink(i int, value string) int {
-	if i == 0 {
-		return 1
-	}
-
-	i--
-
-	if value == "0" {
-		return Blink(i, "1")
-	}
-
-	if len(value)%2 == 0 {
-		l, _ := strconv.Atoi(strings.TrimLeft(value[:len(value)/2], "0"))
-		r, _ := strconv.Atoi(strings.TrimLeft(value[len(value)/2:], "0"))
-
-		return Blink(i, strconv.Itoa(l)) + Blink(i, strconv.Itoa(r))
-	}
-
-	number, _ := strconv.Atoi(value)
-	return Blink(i, strconv.Itoa(number*2024))
 }
