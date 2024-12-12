@@ -29,8 +29,9 @@ func Blink(i int, value string, memo *map[string]int, mutex *sync.Mutex) int {
 		}
 		mutex.Unlock()
 
-		r, _ := strconv.Atoi(value[len(value)/2:])
-		result := Blink(i, value[:len(value)/2], memo, mutex) + Blink(i, strconv.Itoa(r), memo, mutex)
+		mid := len(value) / 2
+		r, _ := strconv.Atoi(value[mid:])
+		result := Blink(i, value[:mid], memo, mutex) + Blink(i, strconv.Itoa(r), memo, mutex)
 
 		mutex.Lock()
 		(*memo)[key] = result
