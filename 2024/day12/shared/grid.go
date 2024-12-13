@@ -16,10 +16,6 @@ func (g *Grid) GetX(pos int) int {
 }
 
 func (g *Grid) GetY(pos int) int {
-	if pos < 0 {
-		abs := -pos
-		return (abs / g.Width) * -1
-	}
 	return pos / g.Width
 }
 
@@ -28,5 +24,8 @@ func (g Grid) GetXY(pos int) (int, int) {
 }
 
 func (g *Grid) GetPos(x, y int) int {
+	if y < 0 {
+		return (g.Width * (y - g.Width)) + x
+	}
 	return (g.Width * y) + x
 }
