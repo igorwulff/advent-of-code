@@ -2,12 +2,14 @@ package main
 
 import (
 	"testing"
+
+	"github.com/igorwulff/advent-of-code/2024/day14/shared"
 )
 
 func TestPart1Simple(t *testing.T) {
 	input := `p=2,4 v=2,-3`
-	width = 11
-	height = 7
+	shared.Width = 11
+	shared.Height = 7
 
 	expected := "0"
 	output := Part1(input)
@@ -31,8 +33,8 @@ p=7,3 v=-1,2
 p=2,4 v=2,-3
 p=9,5 v=-3,-3`
 
-	width = 11
-	height = 7
+	shared.Width = 11
+	shared.Height = 7
 
 	expected := "12"
 	output := Part1(input)

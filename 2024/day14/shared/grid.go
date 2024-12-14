@@ -10,6 +10,9 @@ const (
 	RightBottom
 )
 
+var Width = 101
+var Height = 103
+
 type Grid struct {
 	width  int
 	height int
@@ -17,6 +20,27 @@ type Grid struct {
 
 func NewGrid(width int, height int) Grid {
 	return Grid{width, height}
+}
+
+func (g *Grid) Draw(robots []*Robot) {
+	for y := 0; y < g.height; y++ {
+		for x := 0; x < g.width; x++ {
+			found := false
+			for _, r := range robots {
+				if r.x == x && r.y == y {
+					found = true
+					break
+				}
+			}
+
+			if found {
+				print("#")
+			} else {
+				print(" ")
+			}
+		}
+		println()
+	}
 }
 
 func (g *Grid) GetQuadrant(robot *Robot) Quadrant {
@@ -41,4 +65,20 @@ func (g *Grid) GetQuadrant(robot *Robot) Quadrant {
 
 func (g *Grid) GetDimensions() (int, int) {
 	return g.width, g.height
+}
+
+func (g *Grid) Guess(robots []*Robot) bool {
+	// 50% has a neighbour
+	hits := 0.0
+
+	for _, r := range robots {
+		for _, r2 := range robots {
+			if (r.x == r2.x+1 || r.x == r2.x-1) && (r.y == r2.y+1 || r.y == r2.y-1) {
+				hits++
+				break
+			}
+		}
+	}
+
+	return hits > float64(len(robots))/2.5
 }

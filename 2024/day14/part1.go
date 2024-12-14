@@ -6,12 +6,9 @@ import (
 	"github.com/igorwulff/advent-of-code/2024/day14/shared"
 )
 
-var width = 101
-var height = 103
-
 // Exported function to be called by the main application
 func Part1(input string) string {
-	g := shared.NewGrid(width, height)
+	g := shared.NewGrid(shared.Width, shared.Height)
 	robots := shared.ParseInput(input, &g)
 
 	for i := 0; i < 100; i++ {
