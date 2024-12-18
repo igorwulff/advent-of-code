@@ -16,6 +16,7 @@ func ParseInput(input string) Grid {
 			X: Width - 1,
 			Y: Height - 1,
 		},
+		CorruptedBytes: []int{},
 	}
 
 	g.User = &User{
@@ -30,17 +31,17 @@ func ParseInput(input string) Grid {
 
 	corruptedBytes := 0
 	for _, line := range lines {
-		if CorruptedBytes > corruptedBytes {
-			corruptedBytes++
-		} else {
-			break
-		}
-
 		coord := strings.Split(line, ",")
 		x, _ := strconv.Atoi(coord[0])
 		y, _ := strconv.Atoi(coord[1])
 
-		g.Cells[g.GetPos(x, y)] = "#"
+		if CorruptedBytes > corruptedBytes {
+			corruptedBytes++
+			g.Cells[g.GetPos(x, y)] = "#"
+			continue
+		}
+
+		g.CorruptedBytes = append(g.CorruptedBytes, g.GetPos(x, y))
 	}
 
 	return g

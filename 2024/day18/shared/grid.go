@@ -1,13 +1,17 @@
 package shared
 
-import "slices"
+import (
+	"errors"
+	"slices"
+)
 
 type Grid struct {
-	Width   int
-	Height  int
-	Cells   []string
-	User    *User
-	EndTile *Tile
+	Width          int
+	Height         int
+	Cells          []string
+	User           *User
+	EndTile        *Tile
+	CorruptedBytes []int
 }
 
 type Tile struct {
@@ -41,6 +45,18 @@ func (g *Grid) GetPos(x, y int) int {
 
 func (g *Grid) GetCell(x, y int) string {
 	return g.Cells[g.GetPos(x, y)]
+}
+
+func (g *Grid) PlaceCorruptedByte() (int, error) {
+	if len(g.CorruptedBytes) == 0 {
+		return 0, errors.New("no corrupted bytes left")
+	}
+
+	pos := g.CorruptedBytes[0]
+	g.Cells[pos] = "#"
+	g.CorruptedBytes = g.CorruptedBytes[1:]
+
+	return pos, nil
 }
 
 func (g *Grid) Draw(path []int) {
