@@ -6,6 +6,7 @@ import (
 
 func TestPart1Sample(t *testing.T) {
 	input := `r, wr, b, g, bwu, rb, gb, br
+
 brwrr
 bggr
 gbbr

@@ -7,6 +7,7 @@ import (
 
 type Towel struct {
 	patterns []string
+	memo     map[string]bool
 }
 
 func NewTowel(p []string) *Towel {
@@ -17,24 +18,36 @@ func NewTowel(p []string) *Towel {
 
 	return &Towel{
 		patterns: p,
+		memo:     make(map[string]bool),
 	}
 }
 
 func (t *Towel) Match(input string) bool {
+	// Check if the result is already cached
+	if result, found := t.memo[input]; found {
+		return result
+	}
+
 	for _, pattern := range t.patterns {
-		value := input
-		if strings.Contains(value, pattern) {
-			value = strings.Replace(value, pattern, "", 1)
+		if pattern == input {
+			// Cache and return the result
+			t.memo[input] = true
+			return true
+		}
 
-			if value == "" {
-				return true
-			}
+		// Check if the pattern is at the end of the input
+		if strings.HasSuffix(input, pattern) {
+			// Check if the rest of the input is valid
 
-			if t.Match(value) {
+			if t.Match(input[:len(input)-len(pattern)]) {
+				// Cache and return the result
+				t.memo[input] = true
 				return true
 			}
 		}
 	}
 
+	// Cache and return the result
+	t.memo[input] = false
 	return false
 }
