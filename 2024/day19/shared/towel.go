@@ -6,9 +6,8 @@ import (
 )
 
 type Towel struct {
-	patterns  []string
-	memo      map[string]bool
-	memoCount map[string]int
+	patterns []string
+	memo     map[string]int
 }
 
 func NewTowel(p []string) *Towel {
@@ -18,22 +17,21 @@ func NewTowel(p []string) *Towel {
 	})
 
 	return &Towel{
-		patterns:  p,
-		memo:      make(map[string]bool),
-		memoCount: make(map[string]int),
+		patterns: p,
+		memo:     make(map[string]int),
 	}
 }
 
 func (t *Towel) Match(input string) bool {
 	// Check if the result is already cached
 	if result, found := t.memo[input]; found {
-		return result
+		return result == 1
 	}
 
 	for _, pattern := range t.patterns {
 		if pattern == input {
 			// Cache and return the result
-			t.memo[input] = true
+			t.memo[input] = 1
 			return true
 		}
 
@@ -42,20 +40,20 @@ func (t *Towel) Match(input string) bool {
 			// Check if the rest of the input is valid
 			if t.Match(input[:len(input)-len(pattern)]) {
 				// Cache and return the result
-				t.memo[input] = true
+				t.memo[input] = 1
 				return true
 			}
 		}
 	}
 
 	// Cache and return the result
-	t.memo[input] = false
+	t.memo[input] = 0
 	return false
 }
 
 func (t *Towel) CountWays(input string) int {
 	// Check if the result is already cached
-	if count, found := t.memoCount[input]; found {
+	if count, found := t.memo[input]; found {
 		return count
 	}
 
@@ -64,18 +62,18 @@ func (t *Towel) CountWays(input string) int {
 		return 1
 	}
 
-	ways := 0
+	i := 0
 
 	// Check all patterns
 	for _, pattern := range t.patterns {
 		// If the pattern matches the end of the input
 		if strings.HasSuffix(input, pattern) {
 			// Count ways for the remaining input
-			ways += t.CountWays(input[:len(input)-len(pattern)])
+			i += t.CountWays(input[:len(input)-len(pattern)])
 		}
 	}
 
 	// Cache and return the result
-	t.memoCount[input] = ways
-	return ways
+	t.memo[input] = i
+	return i
 }
