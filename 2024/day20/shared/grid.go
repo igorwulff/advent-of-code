@@ -51,6 +51,7 @@ func (g *Grid) AssignCheatWall(pos int, prevPos int) {
 
 	g.Cells[pos] = "."
 }
+
 func (g *Grid) Draw(path []int) {
 	for i := 0; i < len(g.Cells); i++ {
 		if i%g.Width == 0 {

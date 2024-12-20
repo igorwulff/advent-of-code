@@ -7,7 +7,7 @@ import (
 )
 
 func TestPart1Sample(t *testing.T) {
-	shared.PicoSeconds = 0
+	shared.PicoSeconds = 2
 
 	input := `###############
 #...#...#.....#

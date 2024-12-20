@@ -1,7 +1,7 @@
 package shared
 
 import (
-	"github.com/RyanCarrier/dijkstra/v2"
+	"github.com/igorwulff/advent-of-code/utils"
 )
 
 type Dir int
@@ -88,48 +88,52 @@ func (r *User) MoveTowards(start, pos int, dir Dir, tiles *map[int]bool) Dir {
 	}
 }
 
-func (r *User) FindPaths(graph *dijkstra.Graph, x, y int, dir Dir) {
-	curPos := r.Grid.GetPos(x, y)
-	vertexes, _ := graph.GetVertexArcs(curPos)
+func (r *User) FindPath(x, y int, dir Dir) []int {
+	tiles := make([]int, 0)
 
-	nx, ny := r.NextStep(x, y, dir)
-	nextState := r.IsAvailable(nx, ny)
-	nextPos := r.Grid.GetPos(nx, ny)
+	tiles = append(tiles, r.Grid.GetPos(x, y))
 
-	leftDir := r.CounterClockwise(dir)
-	lx, ly := r.NextStep(x, y, leftDir)
-	leftState := r.IsAvailable(lx, ly)
-	leftPos := r.Grid.GetPos(lx, ly)
+	for r.IsAvailable(x, y) != Finish {
+		if dir != East && r.IsAvailable(x-1, y) != Blocked {
+			dir = West
+		} else if dir != West && r.IsAvailable(x+1, y) != Blocked {
+			dir = East
+		} else if dir != South && r.IsAvailable(x, y-1) != Blocked {
+			dir = North
+		} else if dir != North && r.IsAvailable(x, y+1) != Blocked {
+			dir = South
+		}
 
-	rightDir := r.Clockwise(dir)
-	rx, ry := r.NextStep(x, y, rightDir)
-	rightState := r.IsAvailable(rx, ry)
-	rightPos := r.Grid.GetPos(rx, ry)
+		x, y = r.NextStep(x, y, dir)
 
-	if leftState == Open || leftState == Finish {
-		if _, ok := vertexes[leftPos]; !ok {
-			graph.AddArc(curPos, leftPos, 1)
-			if leftState == Open {
-				r.FindPaths(graph, lx, ly, leftDir)
+		tiles = append(tiles, r.Grid.GetPos(x, y))
+	}
+
+	return tiles
+}
+
+func (r *User) FindCheats(path []int, cheats int) int {
+	sum := 0
+	max := len(path)
+	for idx, pos := range path {
+		x, y := r.Grid.GetXY(pos)
+
+		min := idx + PicoSeconds + 1
+		if min >= max {
+			break
+		}
+
+		for i := min; i < max; i++ {
+			x2, y2 := r.Grid.GetXY(path[i])
+			dist := utils.AbsInt(x-x2) + utils.AbsInt(y-y2)
+
+			//timeSaved := i - idx
+
+			if dist <= cheats {
+				sum++
 			}
 		}
 	}
 
-	if rightState == Open || rightState == Finish {
-		if _, ok := vertexes[rightPos]; !ok {
-			graph.AddArc(curPos, rightPos, 1)
-			if rightState == Open {
-				r.FindPaths(graph, rx, ry, rightDir)
-			}
-		}
-	}
-
-	if nextState == Open || nextState == Finish {
-		if _, ok := vertexes[nextPos]; !ok {
-			graph.AddArc(curPos, nextPos, 1)
-			if nextState == Open {
-				r.FindPaths(graph, nx, ny, dir)
-			}
-		}
-	}
+	return sum
 }
