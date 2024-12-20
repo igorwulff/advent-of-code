@@ -127,9 +127,9 @@ func (r *User) FindCheats(path []int, cheats int) int {
 			x2, y2 := r.Grid.GetXY(path[i])
 			dist := utils.AbsInt(x-x2) + utils.AbsInt(y-y2)
 
-			//timeSaved := i - idx
+			totalDistance := idx + dist + max - i
 
-			if dist <= cheats {
+			if dist <= cheats && (max-totalDistance) >= PicoSeconds {
 				sum++
 			}
 		}
