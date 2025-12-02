@@ -45,12 +45,8 @@ func Part2(input string) string {
 			pos %= 100
 		}
 
-		fmt.Printf("Dial at %d = %s%d: %d\n", pos, dir, step, counter)
+		//fmt.Printf("Dial at %d = %s%d: %d\n", pos, dir, step, counter)
 	}
 
 	return fmt.Sprint(counter)
 }
-
-// 2288 is to low.
-// 5984 is to high.
-// 5978 is correct.

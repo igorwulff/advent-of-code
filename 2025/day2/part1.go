@@ -17,7 +17,6 @@ func Part1(input string) string {
 			if !validate(value) {
 				sum += i
 			}
-
 		}
 	}
 
