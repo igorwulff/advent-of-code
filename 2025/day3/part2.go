@@ -11,22 +11,19 @@ import (
 func Part2(input string) string {
 	sum := 0
 
-	// 12 batteries
 	data := shared.ParseInput(input)
 
 	for _, line := range data {
-		val := ""
+		value := 0
 		start := 0
 
-		for o := 12; o > 0; o-- {
+		for offset := 12; offset > 0; offset-- {
 			var highest int
-			highest, start = FindHighestValue(start, line, o)
-
-			val += strconv.Itoa(highest)
+			highest, start = FindHighestValue(start, line, offset)
+			value = (value * 10) + highest
 		}
 
-		number, _ := strconv.Atoi(val)
-		sum += number
+		sum += value
 	}
 
 	return fmt.Sprint(sum)
