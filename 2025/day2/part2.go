@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/igorwulff/advent-of-code/2025/day2/shared"
 )
@@ -32,14 +33,9 @@ func validateComplex(input string) bool {
 		}
 
 		part := input[:i]
-		multiplier := len(input) / i
+		count := len(input) / i
 
-		value := ""
-		for range multiplier {
-			value += string(part)
-		}
-
-		if value == input {
+		if strings.Repeat(part, count) == input {
 			return false
 		}
 	}
