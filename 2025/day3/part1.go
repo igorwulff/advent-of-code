@@ -41,8 +41,7 @@ func Part1(input string) string {
 			}
 		}
 
-		newValue := (first * 10) + second
-		sum += newValue
+		sum += (first * 10) + second
 	}
 
 	return fmt.Sprint(sum)
