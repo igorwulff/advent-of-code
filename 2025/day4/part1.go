@@ -14,12 +14,11 @@ func Part1(input string) string {
 	for y := 0; y < g.Height; y++ {
 		for x := 0; x < g.Width; x++ {
 			val := g.GetCell(x, y)
-			if val == "." {
+			if val == '.' {
 				continue
 			}
 
-			adj := g.CheckAdjacent(x, y)
-			if adj < 4 {
+			if g.CheckAdjacent(x, y, 4) {
 				sum++
 			}
 		}

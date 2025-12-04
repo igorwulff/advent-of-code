@@ -26,14 +26,16 @@ func (g Grid) GetXY(pos int) (int, int) {
 	return g.GetX(pos), g.GetY(pos)
 }
 
+func (g Grid) GetPos(x, y int) int {
+	return (y * g.Width) + x
+}
+
 func (g *Grid) Mark(x, y int) {
 	g.Cells[y][x] = '.'
 }
 
-func (g *Grid) GetCell(x, y int) string {
-	pos := g.Cells[y]
-	val := string(pos[x])
-	return val
+func (g *Grid) GetCell(x, y int) rune {
+	return g.Cells[y][x]
 }
 
 func (g *Grid) Draw() {
@@ -44,24 +46,27 @@ func (g *Grid) Draw() {
 	println()
 }
 
-func (g *Grid) CheckAdjacent(posX, posY int) int {
-	count := 0
-
-	for x := -1; x <= 1; x++ {
-		for y := -1; y <= 1; y++ {
-			xx := posX + x
-			yy := posY + y
-			if (x == 0 && y == 0) || !g.InBounds(xx, yy) {
+func (g *Grid) CheckAdjacent(posX, posY, max int) bool {
+	for x := posX - 1; x <= posX+1; x++ {
+		for y := posY - 1; y <= posY+1; y++ {
+			if x == posX && y == posY {
 				continue
 			}
 
-			if g.GetCell(xx, yy) == "@" {
-				count++
+			if !g.InBounds(x, y) {
+				continue
+			}
+
+			if g.GetCell(x, y) == '@' {
+				max--
+				if max == 0 {
+					return false
+				}
 			}
 		}
 	}
 
-	return count
+	return true
 }
 
 func ParseInput(input string) *Grid {

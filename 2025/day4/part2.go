@@ -14,21 +14,16 @@ func Part2(input string) string {
 
 	for {
 		counter := 0
-		mark := make([][]bool, g.Height)
-		for i := range mark {
-			mark[i] = make([]bool, g.Width)
-		}
+		mark := make([]int, 0, 100)
 
 		for y := 0; y < g.Height; y++ {
 			for x := 0; x < g.Width; x++ {
-				val := g.GetCell(x, y)
-				if val == "." {
+				if g.GetCell(x, y) == '.' {
 					continue
 				}
 
-				adj := g.CheckAdjacent(x, y)
-				if adj < 4 {
-					mark[y][x] = true
+				if g.CheckAdjacent(x, y, 4) {
+					mark = append(mark, g.GetPos(x, y))
 					counter++
 				}
 			}
@@ -38,12 +33,8 @@ func Part2(input string) string {
 			break
 		}
 
-		for y := 0; y < g.Height; y++ {
-			for x := 0; x < g.Width; x++ {
-				if mark[y][x] {
-					g.Mark(x, y)
-				}
-			}
+		for _, pos := range mark {
+			g.Mark(g.GetX(pos), g.GetY(pos))
 		}
 
 		sum += counter
