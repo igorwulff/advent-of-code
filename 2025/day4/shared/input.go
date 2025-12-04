@@ -7,7 +7,7 @@ import (
 type Grid struct {
 	Width  int
 	Height int
-	Cells  []string
+	Cells  [][]rune
 }
 
 func (g Grid) InBounds(x, y int) bool {
@@ -27,10 +27,7 @@ func (g Grid) GetXY(pos int) (int, int) {
 }
 
 func (g *Grid) Mark(x, y int) {
-	r := []rune(g.Cells[y])
-	r[x] = '.'
-
-	g.Cells[y] = string(r)
+	g.Cells[y][x] = '.'
 }
 
 func (g *Grid) GetCell(x, y int) string {
@@ -73,14 +70,14 @@ func ParseInput(input string) *Grid {
 	g := Grid{
 		Width:  len(lines[0]),
 		Height: 0,
-		Cells:  make([]string, 0),
+		Cells:  make([][]rune, 0),
 	}
 
 	for _, line := range lines {
 		if line == "" {
 			continue
 		}
-		g.Cells = append(g.Cells, line)
+		g.Cells = append(g.Cells, []rune(line))
 		g.Height++
 	}
 
