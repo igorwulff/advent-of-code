@@ -67,17 +67,18 @@ type IdRange struct {
 
 func (ingr Ingredients) CountRanges(fresh []string) int64 {
 	ranges := make([]IdRange, 0, 500)
-
 	for _, r := range fresh {
 		ranges = append(ranges, ingr.GetRange(r))
 	}
 
+	// Sort by Start value... so we can easily traverse it.
 	sort.Slice(ranges, func(i, j int) bool {
 		return ranges[i].Start < ranges[j].Start
 	})
 
 	var idx int64 = 0
 	var count int64 = 0
+	// Iterate over each sorted range and identify overlaps and handle them for each case.
 	for _, r := range ranges {
 		if idx == 0 {
 			idx = r.End
